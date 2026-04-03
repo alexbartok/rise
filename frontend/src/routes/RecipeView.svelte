@@ -5,7 +5,7 @@
   import { recipe, multiplier, optionals } from '../lib/stores/recipe.js';
   import { targetTime, direction } from '../lib/stores/planner.js';
   import { unsocialStart, unsocialEnd } from '../lib/stores/settings.js';
-  import { computeSchedule } from '../lib/scheduler/solver.js';
+  import { computeSchedule, findConflictFreeShift } from '../lib/scheduler/solver.js';
   import HeroImage from '../lib/components/recipe/HeroImage.svelte';
   import IngredientGroups from '../lib/components/recipe/IngredientGroups.svelte';
   import PhaseSteps from '../lib/components/recipe/PhaseSteps.svelte';
@@ -36,30 +36,24 @@
         const naiveTarget = new Date(nextHour.getTime() + totalMinutes * 60000);
 
         // Try this target and check for conflicts
-        const testSchedule = computeSchedule($recipe, {
+        const options = {
           direction: 'backward',
           targetTime: naiveTarget,
           multiplier: 1,
           optionals: {},
           unsocialStart: $unsocialStart,
           unsocialEnd: $unsocialEnd,
-        });
+        };
+        const testSchedule = computeSchedule($recipe, options);
 
         if (testSchedule.warnings.length === 0) {
-          // No conflicts, use naive target
           $targetTime = naiveTarget;
-        } else if (testSchedule.variants && testSchedule.variants.length > 0) {
-          // Find the first conflict-free variant
-          const goodVariant = testSchedule.variants.find(v =>
-            v.id !== 'current' && v.schedule.warnings.length === 0
-          );
-          if (goodVariant) {
-            $targetTime = new Date(goodVariant.targetTime);
-          } else {
-            $targetTime = naiveTarget; // fallback
-          }
         } else {
-          $targetTime = naiveTarget;
+          // Find conflict-free time: try later first, then earlier
+          const later = findConflictFreeShift($recipe, options, 'later');
+          const earlier = !later ? findConflictFreeShift($recipe, options, 'earlier') : null;
+          const best = later || earlier;
+          $targetTime = best ? best.resultTime : naiveTarget;
         }
       }
     } catch (e) {
