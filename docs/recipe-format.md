@@ -701,3 +701,40 @@ recipes/my-sourdough/
 ```
 
 Images are sorted alphabetically, so the number prefix determines the display order.
+
+---
+
+## Localization
+
+Recipes can be translated by placing locale-specific files alongside `recipe.json`.
+
+### File structure
+
+```
+recipes/my-sourdough/
+  recipe.json          # Original (fallback)
+  recipe.de.json       # German translation
+  recipe.en.json       # English translation
+```
+
+`recipe.json` is the original recipe in whatever language it was written. Locale files (`recipe.{lang}.json`) are full copies with translated text. The API serves `recipe.{lang}.json` when available, falling back to `recipe.json`.
+
+### What to translate
+
+Translate all user-facing strings: `name`, `description`, phase names, step names, step descriptions, ingredient group names, ingredient names and notes, surplus option names/descriptions, and notes.
+
+Keep everything else identical: IDs, durations, amounts, units, emojis, structure.
+
+### Template placeholders
+
+`{{ingredient:NAME}}` placeholders reference ingredients by their `name` field. In translated files, use the **translated** ingredient name:
+
+```json
+// recipe.json (German original)
+"description": "{{ingredient:Weizenmehl}} Mehl und {{ingredient:Wasser}} Wasser ..."
+
+// recipe.en.json
+"description": "{{ingredient:Bread flour}} flour and {{ingredient:Water}} water ..."
+```
+
+The placeholder resolves to the scaled amount + unit (e.g. "500 g"). `{{yield:amount}}` and `{{yield:weightPerUnit}}` are language-independent and stay unchanged.

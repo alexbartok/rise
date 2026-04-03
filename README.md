@@ -4,6 +4,12 @@ A self-hosted recipe timeline planner that helps you plan complex, multi-day rec
 
 Built in an afternoon with [Claude Code](https://claude.ai/code). The fact that this exists at all is a bit absurd, but maybe someone out there is equally bad at planning when to start a 3-day bread recipe.
 
+![Recipe list](docs/images/recipe-list.png)
+
+![Recipe detail](docs/images/recipe-detail.png)
+
+![Planner](docs/images/planner.png)
+
 ## Features
 
 - Schedule overview with conflict-free plan variants
@@ -41,18 +47,25 @@ Open http://localhost:5173
 
 ## Production Deployment
 
-```bash
-# Build frontend
-cd frontend && npm run build
+### Docker (recommended)
 
-# Run (serves both API and frontend)
-cd backend
+```bash
+docker compose up --build -d
+```
+
+The included `Dockerfile` builds the Svelte frontend, bundles it with the FastAPI backend, and serves everything from a single container. `docker-compose.yml` maps port 8042 and mounts `recipes/` as a volume so you can edit recipes without rebuilding.
+
+### Without Docker
+
+```bash
+cd frontend && npm run build
+cd ../backend
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 In production the FastAPI backend serves the built Svelte frontend as static files, so a single `uvicorn` process is all you need.
 
-- **Raspberry Pi** -- same steps work on ARM. Use a systemd service for auto-start on boot.
+- **Raspberry Pi** -- same steps work on ARM (Docker or direct).
 - **Synology NAS** -- use Docker or run directly with the bundled Python interpreter.
 
 ## Adding Recipes
@@ -60,11 +73,12 @@ In production the FastAPI backend serves the built Svelte frontend as static fil
 1. Create a folder under `recipes/` (e.g. `recipes/my-sourdough/`)
 2. Add `recipe.json` following the [Recipe Format Guide](docs/recipe-format.md)
 3. Optionally add images in `recipes/my-sourdough/images/`
-4. Recipes appear automatically in the app
+4. Optionally add translations as `recipe.en.json`, `recipe.de.json`, etc. (see [Localization](docs/recipe-format.md#localization))
+5. Recipes appear automatically in the app
 
 ## Tech Stack
 
-- **Frontend:** Svelte 5 + Vite
+- **Frontend:** Svelte 4 + Vite
 - **Backend:** FastAPI + Pydantic
 - **Calendar:** ICS (client-side)
 
