@@ -231,7 +231,7 @@ function checkUnsocialHours(scheduledSteps, unsocialStart, unsocialEnd) {
  * @param {'earlier'|'later'} shiftDirection
  * @returns {{ minutes: number, formattedDuration: string, resultTime: Date } | null}
  */
-function findConflictFreeShift(recipe, options, shiftDirection) {
+export function findConflictFreeShift(recipe, options, shiftDirection) {
     const sign = shiftDirection === 'later' ? 1 : -1;
 
     // Coarse search: 1-hour steps up to 12 hours
