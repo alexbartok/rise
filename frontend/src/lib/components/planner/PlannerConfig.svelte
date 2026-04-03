@@ -38,6 +38,8 @@
 
   $: targetDate = $targetTime;
   $: targetTimeStr = toTimeString($targetTime);
+  $: scheduleSummaryStart = $schedule ? ($fmt, formatScheduleTime($schedule.startTime)) : '';
+  $: scheduleSummaryEnd = $schedule ? ($fmt, formatScheduleTime($schedule.endTime)) : '';
 
   $: hasSurplus = $recipe?.surplus?.enabled === true;
 </script>
@@ -102,7 +104,7 @@
   <div class="schedule-summary">
     {#if $schedule}
       <p class="summary-line">
-        {$t('planner.plan.summary', { start: formatScheduleTime($schedule.startTime), end: formatScheduleTime($schedule.endTime), count: $schedule.steps.length })}
+        {$t('planner.plan.summary', { start: scheduleSummaryStart, end: scheduleSummaryEnd, count: $schedule.steps.length })}
       </p>
       {#if $schedule.warnings.length > 0}
         <p class="summary-warnings">

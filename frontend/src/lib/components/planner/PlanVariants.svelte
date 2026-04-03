@@ -21,20 +21,15 @@
     return Array.from(groups.entries()).map(([label, steps]) => ({ label, steps }));
   }
 
-  function formatTime(date) {
-    return $fmt.time(date);
-  }
-
-  function formatRange(step) {
-    return `${formatTime(step.start)} — ${formatTime(step.end)}`;
-  }
+  // Use $fmt directly in templates for reactivity (Svelte can't track
+  // store dependencies through wrapper functions).
 
   function variantLabel(id) {
     return $t(`planner.variant.${id}`);
   }
 
   function variantTimeLabel(variant) {
-    const time = formatTime(variant.targetTime);
+    const time = $fmt.time(variant.targetTime);
     if ($direction === 'backward') {
       return $t('planner.variant.mealAt', { time });
     }
@@ -62,14 +57,15 @@
   }
 
   // Single plan view (no variants / no conflicts)
+  // Note: $fmt dependency ensures re-render when time/date format settings change
   $: hasVariants = $schedule && $schedule.variants && $schedule.variants.length > 0;
-  $: singleDayGroups = $schedule && !hasVariants ? groupByDay($schedule.steps) : [];
+  $: singleDayGroups = $schedule && !hasVariants ? ($fmt, groupByDay($schedule.steps)) : [];
 
   // Surplus schedule display
   $: surplusMethodName = $surplusConfig.method && $recipe?.surplus?.options
     ? ($recipe.surplus.options.find(o => o.id === $surplusConfig.method)?.name || '')
     : '';
-  $: surplusDayGroups = $surplusSchedule ? groupByDay($surplusSchedule.steps) : [];
+  $: surplusDayGroups = $surplusSchedule ? ($fmt, groupByDay($surplusSchedule.steps)) : [];
   $: showSurplus = $surplusSchedule && $surplusConfig.enabled;
 </script>
 
@@ -122,7 +118,7 @@
                           {formatDuration(step.duration)}
                         {/if}
                       </span>
-                      <span class="step-time">{formatRange(step)}</span>
+                      <span class="step-time">{$fmt.time(step.start)} — {$fmt.time(step.end)}</span>
                     </span>
                   </li>
                 {/each}
@@ -134,7 +130,7 @@
           {#if showSurplus}
             <div class="surplus-section">
               <h4 class="surplus-heading">
-                {surplusMethodName} — {$t('planner.surplus.when')} {formatTime($surplusConfig.targetTime)}
+                {surplusMethodName} — {$t('planner.surplus.when')} {$fmt.time($surplusConfig.targetTime)}
               </h4>
               {#each surplusDayGroups as day}
                 <div class="day-group">
@@ -148,7 +144,7 @@
                         </span>
                         <span class="step-details">
                           <span class="step-duration">{formatDuration(step.duration)}</span>
-                          <span class="step-time">{formatRange(step)}</span>
+                          <span class="step-time">{$fmt.time(step.start)} — {$fmt.time(step.end)}</span>
                         </span>
                       </li>
                     {/each}
@@ -188,7 +184,7 @@
                   </span>
                   <span class="step-details">
                     <span class="step-duration">{formatDuration(step.duration)}</span>
-                    <span class="step-time">{formatRange(step)}</span>
+                    <span class="step-time">{$fmt.time(step.start)} — {$fmt.time(step.end)}</span>
                   </span>
                 </li>
               {/each}
@@ -200,7 +196,7 @@
         {#if showSurplus}
           <div class="surplus-section">
             <h4 class="surplus-heading">
-              {surplusMethodName} — {$t('planner.surplus.when')} {formatTime($surplusConfig.targetTime)}
+              {surplusMethodName} — {$t('planner.surplus.when')} {$fmt.time($surplusConfig.targetTime)}
             </h4>
             {#each surplusDayGroups as day}
               <div class="day-group">
@@ -214,7 +210,7 @@
                       </span>
                       <span class="step-details">
                         <span class="step-duration">{formatDuration(step.duration)}</span>
-                        <span class="step-time">{formatRange(step)}</span>
+                        <span class="step-time">{$fmt.time(step.start)} — {$fmt.time(step.end)}</span>
                       </span>
                     </li>
                   {/each}
