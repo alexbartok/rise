@@ -65,9 +65,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 In production the FastAPI backend serves the built Svelte frontend as static files, so a single `uvicorn` process is all you need.
 
-- **Raspberry Pi** -- same steps work on ARM (Docker or direct).
-- **Synology NAS** -- use Docker or run directly with the bundled Python interpreter.
-
 ## Adding Recipes
 
 1. Create a folder under `recipes/` (e.g. `recipes/my-sourdough/`)
