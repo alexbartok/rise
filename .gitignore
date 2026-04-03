@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+backend/.venv/
+
+# Node
+node_modules/
+frontend/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Claude
+CLAUDE.md
+docs/plans/
+
+# User configuration
+settings.json
+
+# OS
+.DS_Store

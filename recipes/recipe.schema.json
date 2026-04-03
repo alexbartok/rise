@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rise/recipe.schema.json",
+  "title": "Rise Recipe",
+  "description": "Schema for Rise baking recipe files",
+  "type": "object",
+  "required": ["id", "name", "description", "baseYield", "ingredientGroups", "phases"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier, must match the directory name"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the recipe"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the recipe"
+    },
+    "source": {
+      "type": "string",
+      "description": "URL or book name where this recipe originated"
+    },
+    "favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this recipe is marked as a favorite"
+    },
+    "baseYield": {
+      "type": "object",
+      "required": ["amount", "unit", "weightPerUnit"],
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Number of units produced"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Name of the yield unit (e.g. Teiglinge)"
+        },
+        "weightPerUnit": {
+          "type": "object",
+          "required": ["min", "max"],
+          "additionalProperties": false,
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        }
+      }
+    },
+    "ingredientGroups": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/ingredientGroup" }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/phase" }
+    },
+    "surplus": { "$ref": "#/$defs/surplus" },
+    "notes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/note" }
+    }
+  },
+  "$defs": {
+    "duration": {
+      "type": "object",
+      "description": "Time range in minutes with min/ideal/max",
+      "required": ["min", "ideal", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "number", "description": "Minimum duration in minutes" },
+        "ideal": { "type": "number", "description": "Ideal duration in minutes" },
+        "max": { "type": "number", "description": "Maximum duration in minutes" }
+      }
+    },
+    "alarm": {
+      "type": "object",
+      "description": "Alarm configuration for a step",
+      "required": ["enabled", "offsetMinutes"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "offsetMinutes": {
+          "type": "number",
+          "description": "Minutes before (negative) or after (positive) the step starts to fire the alarm"
+        }
+      }
+    },
+    "baseStep": {
+      "type": "object",
+      "description": "Base step shape shared by phase steps and reactivation steps",
+      "required": ["id", "name", "type", "duration", "dependsOn", "description", "alarm"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "emoji": { "type": "string" },
+        "type": { "type": "string", "enum": ["active", "passive"] },
+        "duration": { "$ref": "#/$defs/duration" },
+        "dependsOn": {
+          "type": ["string", "null"],
+          "description": "ID of the step this depends on, or null if none"
+        },
+        "description": { "type": "string" },
+        "alarm": { "$ref": "#/$defs/alarm" }
+      }
+    },
+    "phaseStep": {
+      "type": "object",
+      "description": "A step within a recipe phase, extending baseStep with scheduling fields",
+      "allOf": [
+        { "$ref": "#/$defs/baseStep" },
+        {
+          "type": "object",
+          "required": ["flexPriority", "unsocialHours"],
+          "properties": {
+            "gapAfterPrevious": { "$ref": "#/$defs/duration" },
+            "flexPriority": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Scheduling flexibility priority (1 = rigid, 10 = very flexible)"
+            },
+            "unsocialHours": {
+              "type": "object",
+              "required": ["canOverlap", "mustAvoid"],
+              "additionalProperties": false,
+              "properties": {
+                "canOverlap": { "type": "boolean" },
+                "mustAvoid": { "type": "boolean" }
+              }
+            },
+            "optional": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "reactivationStep": {
+      "type": "object",
+      "description": "A simpler step used in surplus reactivation sequences",
+      "allOf": [
+        { "$ref": "#/$defs/baseStep" }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ingredientGroup": {
+      "type": "object",
+      "required": ["name", "phase", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "phase": {
+          "type": "string",
+          "description": "References a phase ID"
+        },
+        "optional": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, the entire group is optional and excluded by default"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ingredientItem" }
+        }
+      }
+    },
+    "ingredientItem": {
+      "type": "object",
+      "required": ["name", "amount", "unit", "scalable"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "amount": { "type": "number" },
+        "unit": { "type": "string" },
+        "scalable": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "optional": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "required": ["id", "name", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/phaseStep" }
+        }
+      }
+    },
+    "surplus": {
+      "type": "object",
+      "required": ["enabled", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/surplusOption" }
+        }
+      }
+    },
+    "surplusOption": {
+      "type": "object",
+      "required": ["id", "name", "description", "shelfLife", "reactivationSteps"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "shelfLife": {
+          "type": "object",
+          "required": ["days", "qualityNotes"],
+          "additionalProperties": false,
+          "properties": {
+            "days": { "type": "number" },
+            "qualityNotes": { "type": "string" }
+          }
+        },
+        "reactivationSteps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reactivationStep" }
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "required": ["title", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" }
+      }
+    }
+  }
+}
