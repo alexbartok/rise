@@ -31,15 +31,20 @@
 
   $: sorted = sortRecipes(recipes);
 
-  onMount(async () => {
+  let mounted = false;
+
+  async function loadRecipes(lang) {
     try {
-      recipes = await fetchRecipes($locale);
+      recipes = await fetchRecipes(lang);
     } catch (e) {
       console.error('Failed to fetch recipes:', e);
     } finally {
       loading = false;
     }
-  });
+  }
+
+  onMount(() => { mounted = true; });
+  $: if (mounted) loadRecipes($locale);
 
 
 </script>

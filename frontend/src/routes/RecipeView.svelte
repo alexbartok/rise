@@ -17,6 +17,7 @@
   export let params = {};
   let loading = true;
   let activeTab = 'recipe';
+  let mounted = false;
 
   onMount(async () => {
     try {
@@ -60,8 +61,14 @@
       console.error('Failed to fetch recipe:', e);
     } finally {
       loading = false;
+      mounted = true;
     }
   });
+
+  // Re-fetch recipe text when locale changes (without resetting target time)
+  $: if (mounted && $locale) {
+    fetchRecipe(params.id, $locale).then(r => { $recipe = r; }).catch(() => {});
+  }
 
   onDestroy(() => {
     $recipe = null;

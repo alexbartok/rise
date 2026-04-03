@@ -1,0 +1,534 @@
+{
+  "id": "biga-pizza",
+  "name": "100% Biga Pizzateig",
+  "description": "Langsam gereifter Pizzateig mit 100% Biga-Vorteig und langer Kaltgare. Aromatisch, gut verträglich, offene Krume.",
+  "source": "https://youtube.com",
+  "favorite": true,
+  "baseYield": {
+    "amount": 6,
+    "unit": "Teiglinge",
+    "weightPerUnit": {
+      "min": 250,
+      "max": 260
+    }
+  },
+  "ingredientGroups": [
+    {
+      "name": "Biga",
+      "phase": "biga-prep",
+      "items": [
+        {
+          "name": "Weizenmehl",
+          "amount": 1000,
+          "unit": "g",
+          "scalable": true,
+          "notes": "Caputo Nuvola Super oder Caputo Pizzeria, 12-13% Protein"
+        },
+        {
+          "name": "Wasser",
+          "amount": 450,
+          "unit": "ml",
+          "scalable": true,
+          "notes": "Raumtemperatur"
+        },
+        {
+          "name": "Trockenhefe",
+          "amount": 2,
+          "unit": "g",
+          "scalable": true
+        }
+      ]
+    },
+    {
+      "name": "Hauptteig",
+      "phase": "main-dough",
+      "items": [
+        {
+          "name": "Wasser",
+          "amount": 200,
+          "unit": "ml",
+          "scalable": true,
+          "notes": "Raumtemperatur"
+        },
+        {
+          "name": "Salz",
+          "amount": 20,
+          "unit": "g",
+          "scalable": true
+        },
+        {
+          "name": "Trockenhefe",
+          "amount": 1.5,
+          "unit": "g",
+          "scalable": true
+        }
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "id": "biga-prep",
+      "name": "Biga ansetzen",
+      "steps": [
+        {
+          "id": "biga-mix",
+          "name": "Biga mischen",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 15,
+            "ideal": 20,
+            "max": 25
+          },
+          "dependsOn": null,
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "{{ingredient:Weizenmehl}} Mehl und {{ingredient:Trockenhefe}} Trockenhefe in Teigbox geben.\n{{ingredient:Wasser}} Wasser über das Mehl gießen.\nDeckel schließen und kräftig schütteln bis sich Biga-Stränge bilden.\nIn Schüssel mit Deckel umfüllen.",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "biga-bulk",
+          "name": "Stockgare Raumtemperatur",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 90,
+            "ideal": 120,
+            "max": 150
+          },
+          "dependsOn": "biga-mix",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Biga abgedeckt bei Raumtemperatur stehen lassen.",
+          "flexPriority": 7,
+          "unsocialHours": {
+            "canOverlap": true,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "biga-fridge",
+          "name": "In den Kühlschrank",
+          "emoji": "🧊",
+          "type": "active",
+          "duration": {
+            "min": 3,
+            "ideal": 5,
+            "max": 5
+          },
+          "dependsOn": "biga-bulk",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": -5
+          },
+          "description": "Biga in den Kühlschrank stellen.\n±2h Toleranz bei der Kaltgare.",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "cold-ferment",
+          "name": "Kaltgare",
+          "emoji": "🧊",
+          "type": "passive",
+          "duration": {
+            "min": 2280,
+            "ideal": 2760,
+            "max": 3000
+          },
+          "dependsOn": "biga-fridge",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Kaltgare im Kühlschrank. 44-48h ideal, 38-50h akzeptabel.",
+          "flexPriority": 10,
+          "unsocialHours": {
+            "canOverlap": true,
+            "mustAvoid": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "main-dough",
+      "name": "Hauptteig",
+      "steps": [
+        {
+          "id": "biga-out",
+          "name": "Biga rausnehmen",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 15,
+            "ideal": 30,
+            "max": 30
+          },
+          "dependsOn": "cold-ferment",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Biga aus dem Kühlschrank nehmen und akklimatisieren lassen.\n\nWährend der Wartezeit vorbereiten:\n- {{ingredient:Salz}} Salz in {{ingredient:Wasser}} Wasser auflösen\n- {{ingredient:Trockenhefe}} Trockenhefe in ca. 40 ml Wasser auflösen",
+          "flexPriority": 5,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "knead",
+          "name": "Hauptteig kneten",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 30,
+            "ideal": 40,
+            "max": 45
+          },
+          "dependsOn": "biga-out",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Biga in Stücke brechen.\nHefe-Wasser zur Biga geben, niedrige Stufe.\nRestliches Wasser inkl. Salzwasser schrittweise einarbeiten.\nKneten bis glatt und elastisch (8-10 Min).\n\nHefe IMMER vor dem Salzwasser einarbeiten!",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "main-bulk",
+          "name": "Stockgare",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 50,
+            "ideal": 60,
+            "max": 75
+          },
+          "dependsOn": "knead",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Teig abdecken und bei Raumtemperatur ruhen lassen.",
+          "flexPriority": 5,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "shape",
+          "name": "Teiglinge formen",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 20,
+            "ideal": 30,
+            "max": 40
+          },
+          "dependsOn": "main-bulk",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Mit geölten Händen Teig aus der Schüssel nehmen.\n{{yield:amount}} Teiglinge à {{yield:weightPerUnit}} g formen.\nZu glatten Kugeln formen, auf bemehltes Blech setzen.",
+          "flexPriority": 2,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "final-proof",
+          "name": "Stückgare",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 90,
+            "ideal": 120,
+            "max": 150
+          },
+          "dependsOn": "shape",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Teiglinge bei Raumtemperatur gehen lassen.",
+          "flexPriority": 6,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "preheat",
+          "name": "Ofen vorheizen",
+          "emoji": "🔥",
+          "type": "active",
+          "duration": {
+            "min": 30,
+            "ideal": 45,
+            "max": 60
+          },
+          "dependsOn": "shape",
+          "gapAfterPrevious": {
+            "min": 45,
+            "ideal": 75,
+            "max": 110
+          },
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Ofen jetzt vorheizen!\nMindestens 30-45 Minuten.",
+          "flexPriority": 3,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "bake",
+          "name": "Backen",
+          "emoji": "🍕🔥",
+          "type": "active",
+          "duration": {
+            "min": 20,
+            "ideal": 30,
+            "max": 45
+          },
+          "dependsOn": "final-proof",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Teiglinge ausformen, belegen und backen.\n\nGuten Appetit!",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        }
+      ]
+    }
+  ],
+  "surplus": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "fridge",
+        "name": "Kühlschrank",
+        "description": "Geformte Teiglinge abgedeckt in den Kühlschrank stellen.",
+        "shelfLife": {
+          "days": 2,
+          "qualityNotes": "Tag 1: fast identisch. Tag 2: merkbar aber gut, Teig wird flacher und weniger elastisch."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-fridge-out",
+            "name": "Teiglinge aus dem Kühlschrank",
+            "emoji": "🍕",
+            "type": "passive",
+            "duration": {
+              "min": 90,
+              "ideal": 120,
+              "max": 150
+            },
+            "dependsOn": null,
+            "description": "Teiglinge aus dem Kühlschrank nehmen und auf Raumtemperatur kommen lassen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-fridge-preheat",
+            "name": "Ofen vorheizen",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": "surplus-fridge-out",
+            "description": "Ofen vorheizen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-fridge-bake",
+            "name": "Backen",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 15,
+              "ideal": 20,
+              "max": 30
+            },
+            "dependsOn": "surplus-fridge-preheat",
+            "description": "Teiglinge ausformen, belegen und backen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "freeze",
+        "name": "Einfrieren",
+        "description": "Teiglinge einzeln einölen, in Gefrierbeutel, Luft rauspressen.",
+        "shelfLife": {
+          "days": 28,
+          "qualityNotes": "Spürbarer Qualitätsverlust, Cornicione wird kompakter. Akzeptabel für spontane Pizzaabende."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-freeze-thaw",
+            "name": "Teiglinge über Nacht im Kühlschrank auftauen",
+            "emoji": "🧊",
+            "type": "passive",
+            "duration": {
+              "min": 600,
+              "ideal": 720,
+              "max": 900
+            },
+            "dependsOn": null,
+            "description": "Teiglinge am Vorabend aus dem Gefrierfach in den Kühlschrank legen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-temper",
+            "name": "Teiglinge auf Raumtemperatur",
+            "emoji": "🍕",
+            "type": "passive",
+            "duration": {
+              "min": 120,
+              "ideal": 150,
+              "max": 180
+            },
+            "dependsOn": "surplus-freeze-thaw",
+            "description": "Aufgetaute Teiglinge aus dem Kühlschrank nehmen und auf Raumtemperatur kommen lassen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-preheat",
+            "name": "Ofen vorheizen",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": "surplus-freeze-temper",
+            "description": "Ofen vorheizen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-bake",
+            "name": "Backen",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 15,
+              "ideal": 20,
+              "max": 30
+            },
+            "dependsOn": "surplus-freeze-preheat",
+            "description": "Teiglinge ausformen, belegen und backen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "par-bake",
+        "name": "Par-bake (Vorbacken)",
+        "description": "Pizzen ohne Belag 60-90 Sekunden vorbacken, abkühlen lassen, stapeln.",
+        "shelfLife": {
+          "days": 2,
+          "qualityNotes": "2 Tage im Kühlschrank, 4 Wochen im Gefrierer. Praktischste Lösung bei geplantem Überschuss."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-parbake-preheat",
+            "name": "Ofen vorheizen",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": null,
+            "description": "Ofen vorheizen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-parbake-bake",
+            "name": "Belegen und fertigbacken",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 10,
+              "ideal": 15,
+              "max": 20
+            },
+            "dependsOn": "surplus-parbake-preheat",
+            "description": "Vorgebackene Böden belegen und 60-90 Sekunden fertigbacken. Gefroren direkt belegen, nicht vorher auftauen.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "title": "Mehl",
+      "content": "Caputo Nuvola Super (W 260-280): Luftigere, offenere Krume. Erste Wahl.\nCaputo Pizzeria (W 260-270): Strafferer Teig, klassischere Textur. Günstigere Alternative, 1:1 austauschbar.\nHydration nach Optik beim Kneten anpassen."
+    },
+    {
+      "title": "Hefe und Salz",
+      "content": "Hefe wird immer zuerst eingearbeitet, Salzwasser erst danach schrittweise zugegeben. Salz hemmt die Hefe bei direktem Kontakt."
+    },
+    {
+      "title": "Hydration",
+      "content": "Gesamthydration 65% (650 ml Wasser auf 1 kg Mehl)."
+    }
+  ]
+}
