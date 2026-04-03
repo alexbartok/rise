@@ -1,0 +1,534 @@
+{
+  "id": "biga-pizza",
+  "name": "100% Biga Pizza Dough",
+  "description": "Slow-fermented pizza dough with 100% biga pre-ferment and long cold fermentation. Flavorful, easy to digest, open crumb.",
+  "source": "https://youtube.com",
+  "favorite": true,
+  "baseYield": {
+    "amount": 6,
+    "unit": "dough balls",
+    "weightPerUnit": {
+      "min": 250,
+      "max": 260
+    }
+  },
+  "ingredientGroups": [
+    {
+      "name": "Biga",
+      "phase": "biga-prep",
+      "items": [
+        {
+          "name": "Bread flour",
+          "amount": 1000,
+          "unit": "g",
+          "scalable": true,
+          "notes": "Caputo Nuvola Super or Caputo Pizzeria, 12-13% protein"
+        },
+        {
+          "name": "Water",
+          "amount": 450,
+          "unit": "ml",
+          "scalable": true,
+          "notes": "Room temperature"
+        },
+        {
+          "name": "Instant yeast",
+          "amount": 2,
+          "unit": "g",
+          "scalable": true
+        }
+      ]
+    },
+    {
+      "name": "Main dough",
+      "phase": "main-dough",
+      "items": [
+        {
+          "name": "Water",
+          "amount": 200,
+          "unit": "ml",
+          "scalable": true,
+          "notes": "Room temperature"
+        },
+        {
+          "name": "Salt",
+          "amount": 20,
+          "unit": "g",
+          "scalable": true
+        },
+        {
+          "name": "Instant yeast",
+          "amount": 1.5,
+          "unit": "g",
+          "scalable": true
+        }
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "id": "biga-prep",
+      "name": "Prepare Biga",
+      "steps": [
+        {
+          "id": "biga-mix",
+          "name": "Mix Biga",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 15,
+            "ideal": 20,
+            "max": 25
+          },
+          "dependsOn": null,
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "{{ingredient:Weizenmehl}} flour and {{ingredient:Trockenhefe}} instant yeast into a dough box.\nPour {{ingredient:Wasser}} water over the flour.\nClose the lid and shake vigorously until biga strands form.\nTransfer to a bowl with a lid.",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "biga-bulk",
+          "name": "Bulk fermentation at room temperature",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 90,
+            "ideal": 120,
+            "max": 150
+          },
+          "dependsOn": "biga-mix",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Leave the biga covered at room temperature.",
+          "flexPriority": 7,
+          "unsocialHours": {
+            "canOverlap": true,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "biga-fridge",
+          "name": "Into the refrigerator",
+          "emoji": "🧊",
+          "type": "active",
+          "duration": {
+            "min": 3,
+            "ideal": 5,
+            "max": 5
+          },
+          "dependsOn": "biga-bulk",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": -5
+          },
+          "description": "Place the biga in the refrigerator.\n±2h tolerance for the cold fermentation.",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "cold-ferment",
+          "name": "Cold fermentation",
+          "emoji": "🧊",
+          "type": "passive",
+          "duration": {
+            "min": 2280,
+            "ideal": 2760,
+            "max": 3000
+          },
+          "dependsOn": "biga-fridge",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Cold fermentation in the refrigerator. 44-48h ideal, 38-50h acceptable.",
+          "flexPriority": 10,
+          "unsocialHours": {
+            "canOverlap": true,
+            "mustAvoid": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "main-dough",
+      "name": "Main dough",
+      "steps": [
+        {
+          "id": "biga-out",
+          "name": "Take biga out",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 15,
+            "ideal": 30,
+            "max": 30
+          },
+          "dependsOn": "cold-ferment",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Take the biga out of the refrigerator and let it acclimatize.\n\nWhile waiting, prepare:\n- Dissolve {{ingredient:Salz}} salt in {{ingredient:Wasser}} water\n- Dissolve {{ingredient:Trockenhefe}} instant yeast in approx. 40 ml water",
+          "flexPriority": 5,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "knead",
+          "name": "Knead main dough",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 30,
+            "ideal": 40,
+            "max": 45
+          },
+          "dependsOn": "biga-out",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Break the biga into pieces.\nAdd yeast water to the biga, low speed.\nGradually work in the remaining water including the salt water.\nKnead until smooth and elastic (8-10 min).\n\nALWAYS incorporate yeast before the salt water!",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "main-bulk",
+          "name": "Bulk fermentation",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 50,
+            "ideal": 60,
+            "max": 75
+          },
+          "dependsOn": "knead",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Cover the dough and let it rest at room temperature.",
+          "flexPriority": 5,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "shape",
+          "name": "Shape dough balls",
+          "emoji": "🍕",
+          "type": "active",
+          "duration": {
+            "min": 20,
+            "ideal": 30,
+            "max": 40
+          },
+          "dependsOn": "main-bulk",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "With oiled hands, remove the dough from the bowl.\nShape {{yield:amount}} dough balls of {{yield:weightPerUnit}} g each.\nForm into smooth rounds and place on a floured tray.",
+          "flexPriority": 2,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "final-proof",
+          "name": "Final proof",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": {
+            "min": 90,
+            "ideal": 120,
+            "max": 150
+          },
+          "dependsOn": "shape",
+          "alarm": {
+            "enabled": false,
+            "offsetMinutes": 0
+          },
+          "description": "Let the dough balls proof at room temperature.",
+          "flexPriority": 6,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": false
+          }
+        },
+        {
+          "id": "preheat",
+          "name": "Preheat oven",
+          "emoji": "🔥",
+          "type": "active",
+          "duration": {
+            "min": 30,
+            "ideal": 45,
+            "max": 60
+          },
+          "dependsOn": "shape",
+          "gapAfterPrevious": {
+            "min": 45,
+            "ideal": 75,
+            "max": 110
+          },
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Preheat the oven now!\nAt least 30-45 minutes.",
+          "flexPriority": 3,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        },
+        {
+          "id": "bake",
+          "name": "Bake",
+          "emoji": "🍕🔥",
+          "type": "active",
+          "duration": {
+            "min": 20,
+            "ideal": 30,
+            "max": 45
+          },
+          "dependsOn": "final-proof",
+          "alarm": {
+            "enabled": true,
+            "offsetMinutes": 0
+          },
+          "description": "Stretch the dough balls, add toppings, and bake.\n\nEnjoy!",
+          "flexPriority": 1,
+          "unsocialHours": {
+            "canOverlap": false,
+            "mustAvoid": true
+          }
+        }
+      ]
+    }
+  ],
+  "surplus": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "fridge",
+        "name": "Refrigerator",
+        "description": "Place shaped dough balls covered into the refrigerator.",
+        "shelfLife": {
+          "days": 2,
+          "qualityNotes": "Day 1: nearly identical. Day 2: noticeable but good — dough becomes flatter and less elastic."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-fridge-out",
+            "name": "Take dough balls out of refrigerator",
+            "emoji": "🍕",
+            "type": "passive",
+            "duration": {
+              "min": 90,
+              "ideal": 120,
+              "max": 150
+            },
+            "dependsOn": null,
+            "description": "Take the dough balls out of the refrigerator and let them come to room temperature.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-fridge-preheat",
+            "name": "Preheat oven",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": "surplus-fridge-out",
+            "description": "Preheat the oven.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-fridge-bake",
+            "name": "Bake",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 15,
+              "ideal": 20,
+              "max": 30
+            },
+            "dependsOn": "surplus-fridge-preheat",
+            "description": "Stretch the dough balls, add toppings, and bake.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "freeze",
+        "name": "Freeze",
+        "description": "Oil each dough ball individually, place in freezer bags, press out the air.",
+        "shelfLife": {
+          "days": 28,
+          "qualityNotes": "Noticeable quality loss — cornicione becomes denser. Acceptable for spontaneous pizza nights."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-freeze-thaw",
+            "name": "Thaw dough balls overnight in the refrigerator",
+            "emoji": "🧊",
+            "type": "passive",
+            "duration": {
+              "min": 600,
+              "ideal": 720,
+              "max": 900
+            },
+            "dependsOn": null,
+            "description": "The evening before, move the dough balls from the freezer to the refrigerator.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-temper",
+            "name": "Bring dough balls to room temperature",
+            "emoji": "🍕",
+            "type": "passive",
+            "duration": {
+              "min": 120,
+              "ideal": 150,
+              "max": 180
+            },
+            "dependsOn": "surplus-freeze-thaw",
+            "description": "Take the thawed dough balls out of the refrigerator and let them come to room temperature.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-preheat",
+            "name": "Preheat oven",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": "surplus-freeze-temper",
+            "description": "Preheat the oven.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-freeze-bake",
+            "name": "Bake",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 15,
+              "ideal": 20,
+              "max": 30
+            },
+            "dependsOn": "surplus-freeze-preheat",
+            "description": "Stretch the dough balls, add toppings, and bake.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "par-bake",
+        "name": "Par-bake",
+        "description": "Pre-bake pizzas without toppings for 60-90 seconds, let cool, then stack.",
+        "shelfLife": {
+          "days": 2,
+          "qualityNotes": "2 days in the refrigerator, 4 weeks in the freezer. Most practical solution for planned surplus."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-parbake-preheat",
+            "name": "Preheat oven",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": {
+              "min": 30,
+              "ideal": 45,
+              "max": 60
+            },
+            "dependsOn": null,
+            "description": "Preheat the oven.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          },
+          {
+            "id": "surplus-parbake-bake",
+            "name": "Top and finish baking",
+            "emoji": "🍕🔥",
+            "type": "active",
+            "duration": {
+              "min": 10,
+              "ideal": 15,
+              "max": 20
+            },
+            "dependsOn": "surplus-parbake-preheat",
+            "description": "Add toppings to the par-baked bases and bake for 60-90 seconds to finish. If frozen, top directly — do not thaw first.",
+            "alarm": {
+              "enabled": true,
+              "offsetMinutes": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "notes": [
+    {
+      "title": "Flour",
+      "content": "Caputo Nuvola Super (W 260-280): Lighter, more open crumb. First choice.\nCaputo Pizzeria (W 260-270): Tighter dough, more classic texture. More affordable alternative, interchangeable 1:1.\nAdjust hydration by feel while kneading."
+    },
+    {
+      "title": "Yeast and salt",
+      "content": "Yeast is always incorporated first; salt water is added gradually afterwards. Salt inhibits yeast on direct contact."
+    },
+    {
+      "title": "Hydration",
+      "content": "Total hydration 65% (650 ml water per 1 kg flour)."
+    }
+  ]
+}
