@@ -4,9 +4,11 @@
 
   export let recipe;
 
+  const heroExtensions = ['hero.jpg', 'hero.jpeg', 'hero.png', 'hero.webp'];
+  let heroIdx = 0;
   let imgFailed = false;
 
-  $: heroSrc = imageUrl(recipe.id, 'hero.jpg');
+  $: heroSrc = imageUrl(recipe.id, heroExtensions[heroIdx]);
   $: yieldText = recipe.baseYield
     ? `${recipe.baseYield.amount} ${recipe.baseYield.unit}`
     : '';
@@ -36,7 +38,11 @@
   }
 
   function handleImgError() {
-    imgFailed = true;
+    if (heroIdx < heroExtensions.length - 1) {
+      heroIdx++;
+    } else {
+      imgFailed = true;
+    }
   }
 </script>
 

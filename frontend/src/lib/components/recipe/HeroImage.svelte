@@ -3,7 +3,7 @@
 
   export let recipeId;
 
-  const extensions = ['hero.jpg', 'hero.png', 'hero.webp'];
+  const extensions = ['hero.jpg', 'hero.jpeg', 'hero.png', 'hero.webp'];
   let currentIdx = 0;
   let failed = false;
 
