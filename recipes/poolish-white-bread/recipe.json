@@ -1,0 +1,338 @@
+{
+  "id": "poolish-white-bread",
+  "name": "Weißbrot mit Poolish",
+  "description": "Einfaches Weißbrot mit Poolish-Vorteig nach Ken Forkish. Offene Krume, knusprige Kruste, unkompliziert. Optional mit Mais, Käse oder Chili.",
+  "source": "Ken Forkish - Flour Water Salt Yeast",
+  "favorite": false,
+  "baseYield": {
+    "amount": 2,
+    "unit": "Brote",
+    "weightPerUnit": {
+      "min": 850,
+      "max": 900
+    }
+  },
+
+  "ingredientGroups": [
+    {
+      "name": "Poolish",
+      "phase": "poolish-prep",
+      "items": [
+        { "name": "Weizenmehl", "amount": 500, "unit": "g", "scalable": true },
+        { "name": "Wasser", "amount": 500, "unit": "ml", "scalable": true, "notes": "Exakt 27°C" },
+        { "name": "Trockenhefe", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Oder 1,2 g Frischhefe (in etwas Wasser auflösen)" }
+      ]
+    },
+    {
+      "name": "Hauptteig",
+      "phase": "main-dough",
+      "items": [
+        { "name": "Weizenmehl", "amount": 500, "unit": "g", "scalable": true },
+        { "name": "Wasser", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exakt 41°C. Bei Frischhefe: 220 ml bei 41°C + 30 ml bei 23°C" },
+        { "name": "Trockenhefe", "amount": 3, "unit": "g", "scalable": true, "notes": "Oder 9 g Frischhefe (im kühleren Wasseranteil auflösen)" },
+        { "name": "Salz", "amount": 21, "unit": "g", "scalable": true },
+        { "name": "Glutenpulver", "amount": 3, "unit": "EL", "scalable": true, "notes": "Optional, pro 1 kg Mehl. Zur zweiten Mehlhälfte hinzufügen." }
+      ]
+    },
+    {
+      "name": "Optionale Einlagen (beim Falten einarbeiten)",
+      "phase": "main-dough",
+      "optional": true,
+      "items": [
+        { "name": "Mais", "amount": 150, "unit": "g", "scalable": true, "notes": "Dose, abgetropft. Oder Körner vom Kolben." },
+        { "name": "Käse", "amount": 150, "unit": "g", "scalable": true, "notes": "Grob gerieben oder gewürfelt. Gouda, Cheddar, Gruyère." },
+        { "name": "Chili", "amount": 2, "unit": "Stück", "scalable": true, "notes": "Frisch, entkernt und kleingeschnitten. Oder 1-2 TL Chiliflocken." }
+      ]
+    }
+  ],
+
+  "phases": [
+    {
+      "id": "poolish-prep",
+      "name": "Poolish ansetzen",
+      "steps": [
+        {
+          "id": "poolish-mix",
+          "name": "Poolish mischen",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 8, "ideal": 10, "max": 15 },
+          "dependsOn": null,
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "{{ingredient:Weizenmehl}} Mehl und {{ingredient:Trockenhefe}} Hefe vermischen.\nTrockenhefe direkt ins Mehl, Frischhefe zuerst in etwas Wasser lösen.\n{{ingredient:Wasser}} Wasser (27°C) dazu, verrühren.\nBehälter verschließen.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "poolish-ferment",
+          "name": "Poolish-Gare",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 720, "ideal": 750, "max": 840 },
+          "dependsOn": "poolish-mix",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Poolish 12-14 Stunden bei 18-21°C gehen lassen.\nVerarbeitungsfenster: 1-2 Stunden nach Reife.\nBei 24°C Raumtemperatur nur 1 Stunde Fenster.",
+          "flexPriority": 9,
+          "unsocialHours": { "canOverlap": true, "mustAvoid": false }
+        }
+      ]
+    },
+    {
+      "id": "main-dough",
+      "name": "Hauptteig",
+      "steps": [
+        {
+          "id": "dough-mix",
+          "name": "Teig mischen",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 12, "ideal": 15, "max": 20 },
+          "dependsOn": "poolish-ferment",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "{{ingredient:Weizenmehl}} Mehl, {{ingredient:Salz}} Salz und {{ingredient:Trockenhefe}} Hefe in großem Behälter vermischen.\nPoolish mit {{ingredient:Wasser}} warmem Wasser (41°C) lösen und ins Mehl einarbeiten.\n\nZieltemperatur Teig: 23-24°C.\nBehälter verschließen.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bulk-ferment-folds",
+          "name": "Falten",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 50, "ideal": 60, "max": 65 },
+          "dependsOn": "dough-mix",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Innerhalb der ersten Stunde 2-3 Mal alle 20 Minuten falten.\nTechnik: https://youtu.be/CQHuWDEo3SA\n\nFalls optionale Einlagen verwendet werden: beim letzten Faltvorgang einarbeiten.",
+          "flexPriority": 2,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "fold-in-additions",
+          "name": "Zutaten einfalten",
+          "emoji": "🧀",
+          "type": "active",
+          "optional": true,
+          "duration": { "min": 3, "ideal": 5, "max": 10 },
+          "dependsOn": "bulk-ferment-folds",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Optionale Zutaten (Mais, Käse, Chili) gleichmäßig auf den Teig verteilen und mit einer letzten Faltung einarbeiten.\nNicht überkneten, nur einfalten.\nKombinationen nach Geschmack, nicht alles auf einmal nötig.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bulk-ferment-rise",
+          "name": "Gare",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 60, "ideal": 90, "max": 120 },
+          "dependsOn": "fold-in-additions",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Teig weiter gehen lassen bis ca. 2½-fach aufgegangen.\nFingerprobe: 2-3 cm tief drücken.\n- Mulde kommt langsam/teilweise zurück = reif\n- Mulde springt sofort zurück = noch nicht reif\n- Mulde bleibt = Übergare",
+          "flexPriority": 6,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        },
+        {
+          "id": "divide-shape",
+          "name": "Teilen und Formen",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 15, "ideal": 20, "max": 30 },
+          "dependsOn": "bulk-ferment-rise",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Arbeitsfläche bemehlen.\nTeig vorsichtig aus dem Behälter lösen.\nIn {{yield:amount}} Hälften teilen.\nJede Hälfte rundwirken, Oberflächenspannung aufbauen.\nLeicht bemehlen, in bemehlte Gärkörbchen legen.\nIn Plastiktüten geben.\n\nTechnik: https://youtu.be/MPdedk9gJLQ",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "final-proof",
+          "name": "Stückgare",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 50, "ideal": 60, "max": 75 },
+          "dependsOn": "divide-shape",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Teiglinge im Gärkörbchen 1 Stunde gehen lassen.\nFingerprobe zur Kontrolle.",
+          "flexPriority": 4,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        },
+        {
+          "id": "preheat",
+          "name": "Dutch Oven vorheizen",
+          "emoji": "🔥",
+          "type": "active",
+          "duration": { "min": 45, "ideal": 50, "max": 60 },
+          "dependsOn": "divide-shape",
+          "gapAfterPrevious": { "min": 0, "ideal": 10, "max": 30 },
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Dutch Oven in den Backofen stellen.\nAuf 245°C aufheizen.\nMindestens 45 Minuten vorheizen.\nTemperatur ggf. mit Bratenthermometer prüfen.",
+          "flexPriority": 2,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "fridge-loaf-2",
+          "name": "Zweites Brot kühlen",
+          "emoji": "🧊",
+          "type": "active",
+          "duration": { "min": 3, "ideal": 5, "max": 5 },
+          "dependsOn": "final-proof",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Zweiten Teigling im Gärkörbchen in den Kühlschrank stellen.\nErst zum Backen wieder entnehmen.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bake-loaf-1",
+          "name": "Erstes Brot backen",
+          "emoji": "🍞🔥",
+          "type": "active",
+          "duration": { "min": 55, "ideal": 60, "max": 65 },
+          "dependsOn": "fridge-loaf-2",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Teigling vorsichtig in den heißen Dutch Oven legen.\n30 Minuten mit Deckel backen.\nDeckel abnehmen, weitere 30 Minuten backen bis dunkelbraune Kruste entsteht.\n\nTechnik: https://youtu.be/rtoMhY0vS9E",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bake-loaf-2",
+          "name": "Zweites Brot backen",
+          "emoji": "🍞🔥",
+          "type": "active",
+          "duration": { "min": 55, "ideal": 60, "max": 65 },
+          "dependsOn": "bake-loaf-1",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Zweiten Teigling aus dem Kühlschrank nehmen.\nDirekt in den heißen Dutch Oven legen (kein erneutes Vorheizen nötig).\n30 Minuten mit Deckel, 30 Minuten ohne Deckel.\n\nDer gekühlte Teig geht durch den Ofentrieb nochmal schön auf.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "cool",
+          "name": "Auskühlen",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 20, "ideal": 30, "max": 60 },
+          "dependsOn": "bake-loaf-2",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Brote aus dem Dutch Oven nehmen.\nAuf Gitterrost oder hochkant auskühlen lassen.\nNICHT flach auf die Arbeitsfläche legen (Boden wird feucht).\nMindestens 20 Minuten warten bevor angeschnitten wird.",
+          "flexPriority": 3,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        }
+      ]
+    }
+  ],
+
+  "surplus": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "freeze-baked",
+        "name": "Gebackenes Brot einfrieren",
+        "description": "Brot vollständig auskühlen lassen, in Scheiben schneiden, in Gefrierbeutel mit möglichst wenig Luft einfrieren. Scheiben einzeln aus dem Gefrierer nehmen und direkt toasten.",
+        "shelfLife": {
+          "days": 28,
+          "qualityNotes": "Getoastet fast wie frisch. Ungetoastet nach dem Auftauen etwas zäher."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-bread-toast",
+            "name": "Scheiben toasten",
+            "emoji": "🍞",
+            "type": "active",
+            "duration": { "min": 3, "ideal": 5, "max": 5 },
+            "dependsOn": null,
+            "description": "Gefrorene Scheiben direkt in den Toaster. Nicht vorher auftauen.",
+            "alarm": { "enabled": false, "offsetMinutes": 0 }
+          }
+        ]
+      },
+      {
+        "id": "retard-shaped",
+        "name": "Kühlschrank-Retard (geformter Teigling)",
+        "description": "Geformten Teigling im Gärkörbchen in den Kühlschrank stellen statt bei Raumtemperatur gehen zu lassen. Am nächsten Tag backen.",
+        "shelfLife": {
+          "days": 1,
+          "qualityNotes": "Oft sogar besser als direkt gebacken: mehr Geschmack durch längere Gare, bessere Kruste. Bestes Ergebnis innerhalb von 12-18 Stunden."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-retard-out",
+            "name": "Teigling aus dem Kühlschrank",
+            "emoji": "🍞",
+            "type": "passive",
+            "duration": { "min": 45, "ideal": 60, "max": 90 },
+            "dependsOn": null,
+            "description": "Teigling aus dem Kühlschrank nehmen.\n45-60 Minuten bei Raumtemperatur akklimatisieren.\nFingerprobe zur Kontrolle.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-preheat",
+            "name": "Dutch Oven vorheizen",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": { "min": 45, "ideal": 50, "max": 60 },
+            "dependsOn": null,
+            "description": "Dutch Oven im Backofen auf 245°C aufheizen.\nMindestens 45 Minuten vorheizen.\nParallel zum Akklimatisieren starten.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-bake",
+            "name": "Backen",
+            "emoji": "🍞🔥",
+            "type": "active",
+            "duration": { "min": 55, "ideal": 60, "max": 65 },
+            "dependsOn": "surplus-retard-out",
+            "description": "Teigling in den heißen Dutch Oven legen.\n30 Minuten mit Deckel, 30 Minuten ohne Deckel.\nGekühlter Teig hat oft sogar besseren Ofentrieb.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-cool",
+            "name": "Auskühlen",
+            "emoji": "⏳",
+            "type": "passive",
+            "duration": { "min": 20, "ideal": 30, "max": 60 },
+            "dependsOn": "surplus-retard-bake",
+            "description": "Auf Gitterrost oder hochkant auskühlen lassen. Mindestens 20 Minuten.",
+            "alarm": { "enabled": false, "offsetMinutes": 0 }
+          }
+        ]
+      }
+    ]
+  },
+
+  "notes": [
+    {
+      "title": "Poolish-Reife erkennen",
+      "content": "Poolish ist reif wenn an der Oberfläche alle paar Sekunden Bläschen platzen. Verarbeitungsfenster: 1-2 Stunden nach 12 Stunden Reife. Bei 24°C Raumtemperatur nur 1 Stunde Fenster. Nie länger als 14 Stunden warten."
+    },
+    {
+      "title": "Wassertemperatur",
+      "content": "Poolish: exakt 27°C. Hauptteig: exakt 41°C. Zieltemperatur Teig nach dem Mischen: 23-24°C. Bei Frischhefe Wasser aufteilen: 220 g bei 41°C und 30 g bei 23°C, Hefe im kühleren Wasser auflösen."
+    },
+    {
+      "title": "Falttechnik",
+      "content": "2-3 Mal alle 20 Minuten in der ersten Stunde. Danach Teig ungestört bis 2½-fache Größe gehen lassen. Technik: https://youtu.be/CQHuWDEo3SA"
+    },
+    {
+      "title": "Formtechnik",
+      "content": "Teig mit Mehlrand aus Behälter lösen. Beim Rundwirken Oberflächenspannung durch Ziehen über Arbeitsfläche aufbauen. Beim Einsetzen ins Körbchen Unterseite unten lassen, Teig nicht verdrehen. Technik: https://youtu.be/MPdedk9gJLQ"
+    },
+    {
+      "title": "Fingerprobe (Gärtest)",
+      "content": "2-3 cm tief drücken.\n- Mulde kommt langsam/teilweise zurück = Teig ist reif\n- Mulde springt sofort zurück = noch nicht reif\n- Mulde bleibt komplett = Übergare"
+    },
+    {
+      "title": "Backen",
+      "content": "Dutch Oven mindestens 45 Min bei 245°C vorheizen. 30 Min mit Deckel (Dampf), 30 Min ohne Deckel (Kruste). Zweites Brot 20 Min vor dem ersten in den Kühlschrank. Technik: https://youtu.be/rtoMhY0vS9E"
+    },
+    {
+      "title": "Nach dem Backen",
+      "content": "Auf Gitterrost oder hochkant auskühlen. NICHT flach auf die Arbeitsfläche (Boden wird feucht durch Kondensat)."
+    },
+    {
+      "title": "Skalierung",
+      "content": "Dieses Rezept ergibt 2 Brote die nacheinander im selben Dutch Oven gebacken werden. Bei 2x (4 Brote) brauchst du entweder einen zweiten Dutch Oven oder backst in 4 Durchgängen. Backzeit pro Durchgang bleibt gleich."
+    },
+    {
+      "title": "Optionale Einlagen",
+      "content": "Mais, Käse und/oder Chili werden beim letzten Faltvorgang eingearbeitet. Einzeln oder kombiniert. Nicht überkneten, nur einfalten. Käse schmilzt beim Backen und ergibt Taschen, Mais karamellisiert leicht."
+    }
+  ]
+}
