@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -28,6 +29,30 @@ def _validate_recipe_id(recipe_id: str) -> None:
         raise HTTPException(status_code=400, detail="Invalid recipe ID")
 
 
+_LANG_RE = re.compile(r"^[a-zA-Z]{2,5}(?:-[a-zA-Z0-9]{2,8})?$")
+
+
+def _validate_lang(lang: str) -> None:
+    """Reject lang values that could cause path traversal or injection."""
+    if not _LANG_RE.match(lang):
+        raise HTTPException(status_code=400, detail="Invalid lang parameter")
+
+
+def _resolve_recipe_file(recipe_id: str, lang: str | None = None) -> Path:
+    """Return the recipe JSON path, preferring a locale-specific file if available."""
+    _validate_recipe_id(recipe_id)
+    recipe_dir = RECIPES_DIR / recipe_id
+    if lang:
+        _validate_lang(lang)
+        locale_file = recipe_dir / f"recipe.{lang}.json"
+        if locale_file.exists():
+            return locale_file
+    default_file = recipe_dir / "recipe.json"
+    if not default_file.exists():
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    return default_file
+
+
 class FavoriteUpdate(BaseModel):
     favorite: bool
 
@@ -38,32 +63,33 @@ def health():
 
 
 @app.get("/api/recipes")
-def list_recipes():
+def list_recipes(lang: str | None = None):
     """List all recipes (metadata only, no phases/steps)."""
     recipes = []
     for recipe_dir in sorted(RECIPES_DIR.iterdir()):
-        recipe_file = recipe_dir / "recipe.json"
-        if recipe_dir.is_dir() and recipe_file.exists():
-            data = json.loads(recipe_file.read_text())
-            meta = {
-                "id": data["id"],
-                "name": data["name"],
-                "description": data.get("description", ""),
-                "source": data.get("source"),
-                "favorite": data.get("favorite", False),
-                "baseYield": data.get("baseYield"),
-            }
-            recipes.append(meta)
+        if not recipe_dir.is_dir():
+            continue
+        # Skip directories that don't have recipe.json at all
+        if not (recipe_dir / "recipe.json").exists():
+            continue
+        recipe_file = _resolve_recipe_file(recipe_dir.name, lang)
+        data = json.loads(recipe_file.read_text())
+        meta = {
+            "id": data["id"],
+            "name": data["name"],
+            "description": data.get("description", ""),
+            "source": data.get("source"),
+            "favorite": data.get("favorite", False),
+            "baseYield": data.get("baseYield"),
+        }
+        recipes.append(meta)
     return recipes
 
 
 @app.get("/api/recipes/{recipe_id}")
-def get_recipe(recipe_id: str):
+def get_recipe(recipe_id: str, lang: str | None = None):
     """Get full recipe JSON."""
-    _validate_recipe_id(recipe_id)
-    recipe_file = RECIPES_DIR / recipe_id / "recipe.json"
-    if not recipe_file.exists():
-        raise HTTPException(status_code=404, detail="Recipe not found")
+    recipe_file = _resolve_recipe_file(recipe_id, lang)
     return json.loads(recipe_file.read_text())
 
 
