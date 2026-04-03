@@ -6,12 +6,14 @@ async function checkedFetch(url, options) {
     return resp.json();
 }
 
-export async function fetchRecipes() {
-    return checkedFetch(`${BASE}/api/recipes`);
+export async function fetchRecipes(lang) {
+    const params = lang ? `?lang=${lang}` : '';
+    return checkedFetch(`${BASE}/api/recipes${params}`);
 }
 
-export async function fetchRecipe(id) {
-    return checkedFetch(`${BASE}/api/recipes/${id}`);
+export async function fetchRecipe(id, lang) {
+    const params = lang ? `?lang=${lang}` : '';
+    return checkedFetch(`${BASE}/api/recipes/${id}${params}`);
 }
 
 export async function toggleFavorite(id, favorite) {

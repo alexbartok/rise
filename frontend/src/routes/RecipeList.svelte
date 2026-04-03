@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { t } from '../lib/i18n/index.js';
+  import { t, locale } from '../lib/i18n/index.js';
   import { fetchRecipes } from '../lib/api.js';
   import RecipeCard from '../lib/components/RecipeCard.svelte';
   import SettingsBar from '../lib/components/SettingsBar.svelte';
@@ -33,7 +33,7 @@
 
   onMount(async () => {
     try {
-      recipes = await fetchRecipes();
+      recipes = await fetchRecipes($locale);
     } catch (e) {
       console.error('Failed to fetch recipes:', e);
     } finally {

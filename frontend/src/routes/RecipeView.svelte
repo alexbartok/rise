@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { t } from '../lib/i18n/index.js';
+  import { t, locale } from '../lib/i18n/index.js';
   import { fetchRecipe } from '../lib/api.js';
   import { recipe, multiplier, optionals } from '../lib/stores/recipe.js';
   import { targetTime, direction } from '../lib/stores/planner.js';
@@ -20,7 +20,7 @@
 
   onMount(async () => {
     try {
-      $recipe = await fetchRecipe(params.id);
+      $recipe = await fetchRecipe(params.id, $locale);
 
       // Set smart initial target time (conflict-free)
       if ($recipe) {
