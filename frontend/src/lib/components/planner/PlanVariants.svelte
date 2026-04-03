@@ -343,7 +343,8 @@
   }
 
   .step-emoji {
-    width: 1.3rem;
+    min-width: 1.3rem;
+    width: auto;
     text-align: center;
     flex-shrink: 0;
     line-height: 1.3;
