@@ -17,6 +17,9 @@ frontend/dist/
 CLAUDE.md
 docs/plans/
 
+# Deploy
+deploy.sh
+
 # User configuration
 settings.json
 
