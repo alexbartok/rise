@@ -3,7 +3,7 @@
   import { targetTime, direction, schedule, surplusConfig, surplusSchedule } from '../../stores/planner.js';
   import { recipe } from '../../stores/recipe.js';
   import { formatDuration } from '../../scheduler/solver.js';
-  import { formatTime as fmtTime, formatDayLabel } from '../../format.js';
+  import { fmt } from '../../format.js';
 
   /**
    * Group steps by day for display.
@@ -12,7 +12,7 @@
   function groupByDay(steps) {
     const groups = new Map();
     for (const step of steps) {
-      const dayKey = formatDayLabel(step.start);
+      const dayKey = $fmt.dayLabel(step.start);
       if (!groups.has(dayKey)) {
         groups.set(dayKey, []);
       }
@@ -22,7 +22,7 @@
   }
 
   function formatTime(date) {
-    return fmtTime(date);
+    return $fmt.time(date);
   }
 
   function formatRange(step) {

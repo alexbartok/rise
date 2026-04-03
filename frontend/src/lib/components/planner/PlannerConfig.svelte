@@ -4,7 +4,7 @@
   import { unsocialStart, unsocialEnd } from '../../stores/settings.js';
   import { appSettings } from '../../stores/appSettings.js';
   import { targetTime, schedule } from '../../stores/planner.js';
-  import { formatDateTime } from '../../format.js';
+  import { fmt } from '../../format.js';
   import DirectionToggle from './DirectionToggle.svelte';
   import SurplusConfig from './SurplusConfig.svelte';
   import PlanVariants from './PlanVariants.svelte';
@@ -33,7 +33,7 @@
   function formatScheduleTime(date) {
     if (!date) return '?';
     const weekday = date.toLocaleDateString(undefined, { weekday: 'short' });
-    return `${weekday} ${formatDateTime(date)}`;
+    return `${weekday} ${$fmt.dateTime(date)}`;
   }
 
   $: targetDate = $targetTime;

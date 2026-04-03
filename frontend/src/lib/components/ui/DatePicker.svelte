@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { formatDate } from '../../format.js';
+  import { fmt } from '../../format.js';
 
   const dispatch = createEventDispatcher();
 
@@ -27,7 +27,7 @@
     dispatch('change', value);
   }
 
-  $: displayValue = formatDate(value);
+  $: displayValue = $fmt.date(value);
   $: isoValue = toISODate(value);
 </script>
 
