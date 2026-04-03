@@ -1,0 +1,12 @@
+services:
+  rise:
+    build: .
+    container_name: rise
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8042:8000"
+    volumes:
+      - ./recipes:/app/recipes
+    environment:
+      - RECIPES_DIR=/app/recipes
+      - FRONTEND_DIST=/app/frontend-dist
