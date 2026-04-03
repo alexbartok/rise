@@ -85,7 +85,7 @@
             "enabled": true,
             "offsetMinutes": 0
           },
-          "description": "{{ingredient:Weizenmehl}} flour and {{ingredient:Trockenhefe}} instant yeast into a dough box.\nPour {{ingredient:Wasser}} water over the flour.\nClose the lid and shake vigorously until biga strands form.\nTransfer to a bowl with a lid.",
+          "description": "{{ingredient:Bread flour}} flour and {{ingredient:Instant yeast}} instant yeast into a dough box.\nPour {{ingredient:Water}} water over the flour.\nClose the lid and shake vigorously until biga strands form.\nTransfer to a bowl with a lid.",
           "flexPriority": 1,
           "unsocialHours": {
             "canOverlap": false,
@@ -179,7 +179,7 @@
             "enabled": true,
             "offsetMinutes": 0
           },
-          "description": "Take the biga out of the refrigerator and let it acclimatize.\n\nWhile waiting, prepare:\n- Dissolve {{ingredient:Salz}} salt in {{ingredient:Wasser}} water\n- Dissolve {{ingredient:Trockenhefe}} instant yeast in approx. 40 ml water",
+          "description": "Take the biga out of the refrigerator and let it acclimatize.\n\nWhile waiting, prepare:\n- Dissolve {{ingredient:Salt}} salt in {{ingredient:Water}} water\n- Dissolve {{ingredient:Instant yeast}} instant yeast in approx. 40 ml water",
           "flexPriority": 5,
           "unsocialHours": {
             "canOverlap": false,

@@ -59,7 +59,7 @@
           "duration": { "min": 8, "ideal": 10, "max": 15 },
           "dependsOn": null,
           "alarm": { "enabled": true, "offsetMinutes": 0 },
-          "description": "{{ingredient:Weizenmehl}} flour and {{ingredient:Trockenhefe}} yeast, mix together.\nAdd instant yeast directly to the flour; dissolve fresh yeast in a little water first.\nAdd {{ingredient:Wasser}} water (27°C), stir to combine.\nSeal the container.",
+          "description": "{{ingredient:Bread flour}} flour and {{ingredient:Instant yeast}} yeast, mix together.\nAdd instant yeast directly to the flour; dissolve fresh yeast in a little water first.\nAdd {{ingredient:Water}} water (27°C), stir to combine.\nSeal the container.",
           "flexPriority": 1,
           "unsocialHours": { "canOverlap": false, "mustAvoid": true }
         },
@@ -89,7 +89,7 @@
           "duration": { "min": 12, "ideal": 15, "max": 20 },
           "dependsOn": "poolish-ferment",
           "alarm": { "enabled": true, "offsetMinutes": 0 },
-          "description": "{{ingredient:Weizenmehl}} flour, {{ingredient:Salz}} salt, and {{ingredient:Trockenhefe}} yeast — mix together in a large container.\nDissolve the poolish in {{ingredient:Wasser}} warm water (41°C) and work into the flour.\n\nTarget dough temperature: 23-24°C.\nSeal the container.",
+          "description": "{{ingredient:Bread flour}} flour, {{ingredient:Salt}} salt, and {{ingredient:Instant yeast}} yeast — mix together in a large container.\nDissolve the poolish in {{ingredient:Water}} warm water (41°C) and work into the flour.\n\nTarget dough temperature: 23-24°C.\nSeal the container.",
           "flexPriority": 1,
           "unsocialHours": { "canOverlap": false, "mustAvoid": true }
         },
