@@ -179,7 +179,7 @@
             "enabled": true,
             "offsetMinutes": 0
           },
-          "description": "Biga aus dem Kühlschrank nehmen und akklimatisieren lassen.\n\nWährend der Wartezeit vorbereiten:\n- {{ingredient:Salz}} Salz in {{ingredient:Wasser}} Wasser auflösen\n- {{ingredient:Trockenhefe}} Trockenhefe in ca. 40 ml Wasser auflösen",
+          "description": "Biga aus dem Kühlschrank nehmen und akklimatisieren lassen.\n\nWährend der Wartezeit vorbereiten:\n- {{ingredient:Salz}} Salz in {{ingredient:Wasser}} Wasser auflösen\n- {{ingredient:Trockenhefe}} Trockenhefe in etwas Wasser auflösen",
           "flexPriority": 5,
           "unsocialHours": {
             "canOverlap": false,

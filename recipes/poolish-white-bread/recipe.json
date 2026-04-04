@@ -1,7 +1,7 @@
 {
   "id": "poolish-white-bread",
   "name": "Weißbrot mit Poolish",
-  "description": "Einfaches Weißbrot mit Poolish-Vorteig nach Ken Forkish. Offene Krume, knusprige Kruste, unkompliziert. Optional mit Mais, Käse oder Chili.",
+  "description": "Einfaches Weißbrot mit Poolish-Vorteig nach „Flour Water Salt Yeast" von Ken Forkish. Offene Krume, knusprige Kruste, unkompliziert. Optional mit Mais, Käse oder Chili.",
   "source": "Ken Forkish - Flour Water Salt Yeast",
   "favorite": false,
   "baseYield": {
@@ -20,7 +20,7 @@
       "items": [
         { "name": "Weizenmehl", "amount": 500, "unit": "g", "scalable": true },
         { "name": "Wasser", "amount": 500, "unit": "ml", "scalable": true, "notes": "Exakt 27°C" },
-        { "name": "Trockenhefe", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Oder 1,2 g Frischhefe (in etwas Wasser auflösen)" }
+        { "name": "Trockenhefe", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Oder 3x Menge Frischhefe (in etwas Wasser auflösen)" }
       ]
     },
     {
@@ -28,8 +28,8 @@
       "phase": "main-dough",
       "items": [
         { "name": "Weizenmehl", "amount": 500, "unit": "g", "scalable": true },
-        { "name": "Wasser", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exakt 41°C. Bei Frischhefe: 220 ml bei 41°C + 30 ml bei 23°C" },
-        { "name": "Trockenhefe", "amount": 3, "unit": "g", "scalable": true, "notes": "Oder 9 g Frischhefe (im kühleren Wasseranteil auflösen)" },
+        { "name": "Wasser", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exakt 41°C. Bei Frischhefe: ca. 90% bei 41°C, Rest bei 23°C" },
+        { "name": "Trockenhefe", "amount": 3, "unit": "g", "scalable": true, "notes": "Oder 3x Menge Frischhefe (im kühleren Wasseranteil auflösen)" },
         { "name": "Salz", "amount": 21, "unit": "g", "scalable": true },
         { "name": "Glutenpulver", "amount": 3, "unit": "EL", "scalable": true, "notes": "Optional, pro 1 kg Mehl. Zur zweiten Mehlhälfte hinzufügen." }
       ]
@@ -304,7 +304,7 @@
     },
     {
       "title": "Wassertemperatur",
-      "content": "Poolish: exakt 27°C. Hauptteig: exakt 41°C. Zieltemperatur Teig nach dem Mischen: 23-24°C. Bei Frischhefe Wasser aufteilen: 220 g bei 41°C und 30 g bei 23°C, Hefe im kühleren Wasser auflösen."
+      "content": "Poolish: exakt 27°C. Hauptteig: exakt 41°C. Zieltemperatur Teig nach dem Mischen: 23-24°C. Bei Frischhefe Wasser aufteilen: ca. 90% bei 41°C, Rest bei 23°C. Hefe im kühleren Wasser auflösen."
     },
     {
       "title": "Falttechnik",

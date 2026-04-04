@@ -47,6 +47,9 @@
             <span class="amount">{formatAmount(item.scaledAmount)}</span>
             <span class="unit">{item.unit}</span>
             <span class="name">{item.name}</span>
+            {#if $multiplier > 1 && item.scalable}
+              <span class="original-hint">({formatAmount($multiplier)}x {formatAmount(item.amount)}{item.unit})</span>
+            {/if}
             {#if item.notes}
               <span class="notes">{item.notes}</span>
             {/if}
@@ -181,6 +184,11 @@
 
   .name {
     color: var(--text);
+  }
+
+  .original-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
   }
 
   .notes {

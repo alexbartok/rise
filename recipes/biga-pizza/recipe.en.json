@@ -179,7 +179,7 @@
             "enabled": true,
             "offsetMinutes": 0
           },
-          "description": "Take the biga out of the refrigerator and let it acclimatize.\n\nWhile waiting, prepare:\n- Dissolve {{ingredient:Salt}} salt in {{ingredient:Water}} water\n- Dissolve {{ingredient:Instant yeast}} instant yeast in approx. 40 ml water",
+          "description": "Take the biga out of the refrigerator and let it acclimatize.\n\nWhile waiting, prepare:\n- Dissolve {{ingredient:Salt}} salt in {{ingredient:Water}} water\n- Dissolve {{ingredient:Instant yeast}} instant yeast in a little water",
           "flexPriority": 5,
           "unsocialHours": {
             "canOverlap": false,

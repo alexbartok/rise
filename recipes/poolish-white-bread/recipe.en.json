@@ -1,7 +1,7 @@
 {
   "id": "poolish-white-bread",
   "name": "White Bread with Poolish",
-  "description": "Simple white bread with poolish pre-ferment based on Ken Forkish. Open crumb, crispy crust, straightforward. Optionally with corn, cheese, or chili.",
+  "description": "Simple white bread with poolish pre-ferment based on \"Flour Water Salt Yeast\" by Ken Forkish. Open crumb, crispy crust, straightforward. Optionally with corn, cheese, or chili.",
   "source": "Ken Forkish - Flour Water Salt Yeast",
   "favorite": false,
   "baseYield": {
@@ -20,7 +20,7 @@
       "items": [
         { "name": "Bread flour", "amount": 500, "unit": "g", "scalable": true },
         { "name": "Water", "amount": 500, "unit": "ml", "scalable": true, "notes": "Exactly 27°C" },
-        { "name": "Instant yeast", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Or 1.2 g fresh yeast (dissolve in a little water)" }
+        { "name": "Instant yeast", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Or 3x the amount as fresh yeast (dissolve in a little water)" }
       ]
     },
     {
@@ -28,8 +28,8 @@
       "phase": "main-dough",
       "items": [
         { "name": "Bread flour", "amount": 500, "unit": "g", "scalable": true },
-        { "name": "Water", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exactly 41°C. With fresh yeast: 220 ml at 41°C + 30 ml at 23°C" },
-        { "name": "Instant yeast", "amount": 3, "unit": "g", "scalable": true, "notes": "Or 9 g fresh yeast (dissolve in the cooler water portion)" },
+        { "name": "Water", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exactly 41°C. With fresh yeast: approx. 90% at 41°C, remainder at 23°C" },
+        { "name": "Instant yeast", "amount": 3, "unit": "g", "scalable": true, "notes": "Or 3x the amount as fresh yeast (dissolve in the cooler water portion)" },
         { "name": "Salt", "amount": 21, "unit": "g", "scalable": true },
         { "name": "Vital wheat gluten", "amount": 3, "unit": "EL", "scalable": true, "notes": "Optional, per 1 kg flour. Add to the second half of the flour." }
       ]
@@ -304,7 +304,7 @@
     },
     {
       "title": "Water temperature",
-      "content": "Poolish: exactly 27°C. Main dough: exactly 41°C. Target dough temperature after mixing: 23-24°C. With fresh yeast, split the water: 220 g at 41°C and 30 g at 23°C, dissolve the yeast in the cooler water."
+      "content": "Poolish: exactly 27°C. Main dough: exactly 41°C. Target dough temperature after mixing: 23-24°C. With fresh yeast, split the water: approx. 90% at 41°C, remainder at 23°C. Dissolve the yeast in the cooler water."
     },
     {
       "title": "Folding technique",
