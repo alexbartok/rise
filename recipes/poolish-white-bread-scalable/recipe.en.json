@@ -174,11 +174,11 @@
           "emoji": "🍞🔥",
           "type": "active",
           "duration": { "min": 55, "ideal": 60, "max": 65 },
-          "dependsOn": "preheat",
+          "dependsOn": "final-proof",
           "alarm": { "enabled": true, "offsetMinutes": 0 },
           "description": "Carefully place the dough into the hot Dutch oven.\nBake 30 minutes with the lid on.\nRemove the lid and bake another 30 minutes until a dark brown crust forms.\n\nTechnique: https://youtu.be/rtoMhY0vS9E",
           "flexPriority": 1,
-          "unsocialHours": { "canOverlap": false, "mustAvoid": false },
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true },
           "perUnit": true,
           "hold": {
             "where": "Fridge",
