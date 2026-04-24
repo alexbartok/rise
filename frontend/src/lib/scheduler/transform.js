@@ -62,7 +62,7 @@ function expandPhaseSteps(steps, yieldCount) {
                 duration: step.hold.transitionDuration,
                 dependsOn: rewiredDependsOn,
                 description: storeLines.join('\n'),
-                alarm: { enabled: true, offsetMinutes: 0 },
+                alarm: step.alarm ?? { enabled: true, offsetMinutes: 0 },
                 flexPriority: step.flexPriority ?? 1,
                 unsocialHours: step.unsocialHours ?? { canOverlap: false, mustAvoid: false },
             });
