@@ -132,4 +132,78 @@ describe('expandForYield', () => {
         const bake1 = result.phases[0].steps.find(s => s.id === 'bake-1');
         expect(bake1.dependsOn).toBe('shape-2');
     });
+
+    const recipeWithHold = {
+        baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+        phases: [{
+            id: 'bake-phase',
+            name: 'Bake',
+            steps: [
+                { id: 'proof', name: 'Proof', duration: { min: 60, ideal: 60, max: 60 }, description: 'Proof' },
+                {
+                    id: 'bake',
+                    name: 'Bake',
+                    duration: { min: 55, ideal: 60, max: 65 },
+                    type: 'active',
+                    alarm: { enabled: true, offsetMinutes: 0 },
+                    dependsOn: 'proof',
+                    description: 'Teigling in Dutch Oven',
+                    flexPriority: 1,
+                    unsocialHours: { canOverlap: false, mustAvoid: false },
+                    perUnit: true,
+                    hold: {
+                        where: 'Kühlschrank',
+                        storeAction: 'Brot {n} in den Kühlschrank stellen',
+                        retrieveAction: 'Brot {n} aus dem Kühlschrank nehmen',
+                        transitionDuration: { min: 3, ideal: 5, max: 5 },
+                    },
+                },
+            ],
+        }],
+    };
+
+    it('inserts a batched store event when yield > 1', () => {
+        const result = expandForYield(recipeWithHold, 2);  // N = 4
+        const steps = result.phases[0].steps;
+        const storeStep = steps.find(s => s.id === 'bake-hold-store');
+        expect(storeStep).toBeDefined();
+        expect(storeStep.description).toContain('Brot 2 in den Kühlschrank stellen');
+        expect(storeStep.description).toContain('Brot 3 in den Kühlschrank stellen');
+        expect(storeStep.description).toContain('Brot 4 in den Kühlschrank stellen');
+        expect(storeStep.duration).toEqual({ min: 3, ideal: 5, max: 5 });
+        expect(storeStep.dependsOn).toBe('proof');
+    });
+
+    it('first bake slot depends on store event when N > 1', () => {
+        const result = expandForYield(recipeWithHold, 2);
+        const slot1 = result.phases[0].steps.find(s => s.id === 'bake-1');
+        expect(slot1.dependsOn).toBe('bake-hold-store');
+    });
+
+    it('prepends retrieve action to description of slots 2..N', () => {
+        const result = expandForYield(recipeWithHold, 2);
+        const steps = result.phases[0].steps;
+        const slot1 = steps.find(s => s.id === 'bake-1');
+        const slot2 = steps.find(s => s.id === 'bake-2');
+        const slot4 = steps.find(s => s.id === 'bake-4');
+        expect(slot1.description).toBe('Teigling in Dutch Oven');  // no prefix on first
+        expect(slot2.description).toMatch(/^Brot 2 aus dem Kühlschrank nehmen/);
+        expect(slot2.description).toContain('Teigling in Dutch Oven');
+        expect(slot4.description).toMatch(/^Brot 4 aus dem Kühlschrank nehmen/);
+    });
+
+    it('at yield=1, no store event and no retrieve prefix', () => {
+        const result = expandForYield(recipeWithHold, 0.5);  // N = 1
+        const steps = result.phases[0].steps;
+        expect(steps.find(s => s.id === 'bake-hold-store')).toBeUndefined();
+        const slot1 = steps.find(s => s.id === 'bake-1');
+        expect(slot1.description).toBe('Teigling in Dutch Oven');
+    });
+
+    it('at yield=2, store event describes only loaf 2', () => {
+        const result = expandForYield(recipeWithHold, 1);  // N = 2
+        const storeStep = result.phases[0].steps.find(s => s.id === 'bake-hold-store');
+        expect(storeStep.description).toContain('Brot 2 in den Kühlschrank stellen');
+        expect(storeStep.description).not.toContain('Brot 3');
+    });
 });

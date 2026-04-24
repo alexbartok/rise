@@ -47,16 +47,44 @@ function expandPhaseSteps(steps, yieldCount) {
             continue;
         }
 
+        // Generate hold store event for units 2..N (when hold declared and N > 1)
+        let slot1Depends = rewiredDependsOn;
+        if (step.hold && yieldCount > 1) {
+            const storeLines = [];
+            for (let n = 2; n <= yieldCount; n++) {
+                storeLines.push(step.hold.storeAction.replaceAll('{n}', String(n)));
+            }
+            const storeId = `${step.id}-hold-store`;
+            expanded.push({
+                id: storeId,
+                name: step.hold.where,
+                type: 'active',
+                duration: step.hold.transitionDuration,
+                dependsOn: rewiredDependsOn,
+                description: storeLines.join('\n'),
+                alarm: { enabled: true, offsetMinutes: 0 },
+                flexPriority: step.flexPriority ?? 1,
+                unsocialHours: step.unsocialHours ?? { canOverlap: false, mustAvoid: false },
+            });
+            slot1Depends = storeId;
+        }
+
         // Expand into yieldCount sequential slots
-        let prevId = rewiredDependsOn;
+        let prevId = slot1Depends;
         for (let k = 1; k <= yieldCount; k++) {
             const slotId = `${step.id}-${k}`;
             const { perUnit: _pu, hold: _h, ...rest } = step;
+            let description = rest.description;
+            if (k > 1 && step.hold) {
+                const retrieveLine = step.hold.retrieveAction.replaceAll('{n}', String(k));
+                description = `${retrieveLine}\n${description}`;
+            }
             expanded.push({
                 ...rest,
                 id: slotId,
                 name: `${step.name} (${k}/${yieldCount})`,
                 dependsOn: prevId,
+                description,
             });
             prevId = slotId;
         }
