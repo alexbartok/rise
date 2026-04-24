@@ -23,5 +23,8 @@ deploy.sh
 # User configuration
 settings.json
 
+# Local scratch
+inbox/
+
 # OS
 .DS_Store
