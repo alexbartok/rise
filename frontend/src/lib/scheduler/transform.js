@@ -20,13 +20,13 @@ export function expandForYield(recipe, multiplier) {
 
     const newPhases = recipe.phases.map(phase => ({
         ...phase,
-        steps: expandPhaseSteps(phase.steps, yieldCount),
+        steps: expandPhaseSteps(phase.steps, yieldCount, recipe.baseYield.amount),
     }));
 
     return { ...recipe, phases: newPhases };
 }
 
-function expandPhaseSteps(steps, yieldCount) {
+function expandPhaseSteps(steps, yieldCount, baseYield) {
     const expanded = [];
     // lastSlotId is scoped per-phase. Cross-phase dependsOn rewiring is not
     // supported; current recipes don't need it. If that changes, lift this map
@@ -41,9 +41,23 @@ function expandPhaseSteps(steps, yieldCount) {
             : step.dependsOn;
 
         if (!step.perUnit) {
-            expanded.push(rewiredDependsOn === step.dependsOn
-                ? step
-                : { ...step, dependsOn: rewiredDependsOn });
+            const needsRewire = rewiredDependsOn !== step.dependsOn;
+            const needsScale = step.scalesWithYield === true;
+            if (!needsRewire && !needsScale) {
+                expanded.push(step);
+                continue;
+            }
+            const out = { ...step };
+            if (needsRewire) out.dependsOn = rewiredDependsOn;
+            if (needsScale) {
+                const ratio = yieldCount / baseYield;
+                out.duration = {
+                    min: Math.round(step.duration.min * ratio),
+                    ideal: Math.round(step.duration.ideal * ratio),
+                    max: Math.round(step.duration.max * ratio),
+                };
+            }
+            expanded.push(out);
             continue;
         }
 

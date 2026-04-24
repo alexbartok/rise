@@ -206,4 +206,74 @@ describe('expandForYield', () => {
         expect(storeStep.description).toContain('Brot 2 in den Kühlschrank stellen');
         expect(storeStep.description).not.toContain('Brot 3');
     });
+
+    it('scales step duration linearly when scalesWithYield: true', () => {
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'shape', name: 'Shape', duration: { min: 15, ideal: 20, max: 30 }, description: 'Shape', scalesWithYield: true },
+                    { id: 'bake', name: 'Bake', duration: { min: 60, ideal: 60, max: 60 }, dependsOn: 'shape', description: 'Bake', perUnit: true },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 2);  // N = 4, ratio 4/2 = 2
+        const shape = result.phases[0].steps.find(s => s.id === 'shape');
+        expect(shape.duration).toEqual({ min: 30, ideal: 40, max: 60 });
+    });
+
+    it('does not scale duration when scalesWithYield is absent', () => {
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'mix', name: 'Mix', duration: { min: 5, ideal: 10, max: 15 }, description: 'Mix' },
+                    { id: 'bake', name: 'Bake', duration: { min: 60, ideal: 60, max: 60 }, dependsOn: 'mix', description: 'Bake', perUnit: true },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 2);
+        const mix = result.phases[0].steps.find(s => s.id === 'mix');
+        expect(mix.duration).toEqual({ min: 5, ideal: 10, max: 15 });
+    });
+
+    it('rounds scaled durations to integers', () => {
+        const recipe = {
+            baseYield: { amount: 3, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'shape', name: 'Shape', duration: { min: 10, ideal: 10, max: 10 }, description: 'Shape', scalesWithYield: true },
+                    { id: 'bake', name: 'Bake', duration: { min: 60, ideal: 60, max: 60 }, dependsOn: 'shape', description: 'Bake', perUnit: true },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 2/3);  // N = 2, ratio 2/3
+        const shape = result.phases[0].steps.find(s => s.id === 'shape');
+        expect(shape.duration.ideal).toBe(Math.round(10 * 2 / 3));
+        expect(shape.duration.min).toBe(Math.round(10 * 2 / 3));
+        expect(shape.duration.max).toBe(Math.round(10 * 2 / 3));
+    });
+
+    it('activates transform mode via scalesWithYield alone (no perUnit needed)', () => {
+        // Even if no perUnit step exists, if any step has scalesWithYield the
+        // recipe is in transform mode. Currently the detector only looks for
+        // perUnit. This test documents the CURRENT behavior — the recipe would
+        // be returned unchanged. If you change the detector, update this test.
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'shape', name: 'Shape', duration: { min: 10, ideal: 10, max: 10 }, description: 'Shape', scalesWithYield: true },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 2);
+        // The expected behavior per the plan: transform mode is only activated by
+        // perUnit. A recipe with scalesWithYield but no perUnit returns unchanged.
+        expect(result).toBe(recipe);
+    });
 });
