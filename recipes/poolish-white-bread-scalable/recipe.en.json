@@ -1,0 +1,318 @@
+{
+  "id": "poolish-white-bread-scalable",
+  "name": "White Bread with Poolish (scalable)",
+  "description": "Simple white bread with poolish pre-ferment based on \"Flour Water Salt Yeast\" by Ken Forkish. Open crumb, crispy crust, straightforward. Optionally with corn, cheese, or chili.",
+  "source": "Ken Forkish - Flour Water Salt Yeast",
+  "favorite": false,
+  "baseYield": {
+    "amount": 2,
+    "unit": "loaves",
+    "weightPerUnit": {
+      "min": 850,
+      "max": 900
+    }
+  },
+
+  "ingredientGroups": [
+    {
+      "name": "Poolish",
+      "phase": "poolish-prep",
+      "items": [
+        { "name": "Bread flour", "amount": 500, "unit": "g", "scalable": true },
+        { "name": "Water", "amount": 500, "unit": "ml", "scalable": true, "notes": "Exactly 27°C" },
+        { "name": "Instant yeast", "amount": 0.4, "unit": "g", "scalable": true, "notes": "Or 3x the amount as fresh yeast (dissolve in a little water)" }
+      ]
+    },
+    {
+      "name": "Main dough",
+      "phase": "main-dough",
+      "items": [
+        { "name": "Bread flour", "amount": 500, "unit": "g", "scalable": true },
+        { "name": "Water", "amount": 250, "unit": "ml", "scalable": true, "notes": "Exactly 41°C. With fresh yeast: approx. 90% at 41°C, remainder at 23°C" },
+        { "name": "Instant yeast", "amount": 3, "unit": "g", "scalable": true, "notes": "Or 3x the amount as fresh yeast (dissolve in the cooler water portion)" },
+        { "name": "Salt", "amount": 21, "unit": "g", "scalable": true },
+        { "name": "Vital wheat gluten", "amount": 3, "unit": "EL", "scalable": true, "notes": "Optional, per 1 kg flour. Add to the second half of the flour." }
+      ]
+    },
+    {
+      "name": "Optional mix-ins (fold in during stretch and folds)",
+      "phase": "main-dough",
+      "optional": true,
+      "items": [
+        { "name": "Corn", "amount": 150, "unit": "g", "scalable": true, "notes": "Canned, drained. Or kernels cut from the cob." },
+        { "name": "Cheese", "amount": 150, "unit": "g", "scalable": true, "notes": "Coarsely grated or cubed. Gouda, cheddar, Gruyère." },
+        { "name": "Chili", "amount": 2, "unit": "pieces", "scalable": true, "notes": "Fresh, seeded and finely chopped. Or 1-2 tsp chili flakes." }
+      ]
+    }
+  ],
+
+  "phases": [
+    {
+      "id": "poolish-prep",
+      "name": "Prepare Poolish",
+      "steps": [
+        {
+          "id": "poolish-mix",
+          "name": "Mix Poolish",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 8, "ideal": 10, "max": 15 },
+          "dependsOn": null,
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "{{ingredient:Bread flour}} flour and {{ingredient:Instant yeast}} yeast, mix together.\nAdd instant yeast directly to the flour; dissolve fresh yeast in a little water first.\nAdd {{ingredient:Water}} water (27°C), stir to combine.\nSeal the container.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "poolish-ferment",
+          "name": "Poolish fermentation",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 720, "ideal": 750, "max": 840 },
+          "dependsOn": "poolish-mix",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Let the poolish ferment for 12-14 hours at 18-21°C.\nProcessing window: 1-2 hours after maturity.\nAt 24°C room temperature, only a 1-hour window.",
+          "flexPriority": 9,
+          "unsocialHours": { "canOverlap": true, "mustAvoid": false }
+        }
+      ]
+    },
+    {
+      "id": "main-dough",
+      "name": "Main dough",
+      "steps": [
+        {
+          "id": "dough-mix",
+          "name": "Mix dough",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 12, "ideal": 15, "max": 20 },
+          "dependsOn": "poolish-ferment",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "{{ingredient:Bread flour}} flour, {{ingredient:Salt}} salt, and {{ingredient:Instant yeast}} yeast — mix together in a large container.\nDissolve the poolish in {{ingredient:Water}} warm water (41°C) and work into the flour.\n\nTarget dough temperature: 23-24°C.\nSeal the container.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bulk-ferment-folds",
+          "name": "Stretch and fold",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 50, "ideal": 60, "max": 65 },
+          "dependsOn": "dough-mix",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Perform 2-3 sets of stretch and folds every 20 minutes during the first hour.\nTechnique: https://youtu.be/CQHuWDEo3SA\n\nIf using optional mix-ins: fold them in during the last set.",
+          "flexPriority": 2,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "fold-in-additions",
+          "name": "Fold in mix-ins",
+          "emoji": "🧀",
+          "type": "active",
+          "optional": true,
+          "duration": { "min": 3, "ideal": 5, "max": 10 },
+          "dependsOn": "bulk-ferment-folds",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Spread optional mix-ins (corn, cheese, chili) evenly over the dough and incorporate with one final fold.\nDo not overwork — just fold in.\nCombine to taste; you don't need to use all of them at once.",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bulk-ferment-rise",
+          "name": "Bulk fermentation",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 60, "ideal": 90, "max": 120 },
+          "dependsOn": "fold-in-additions",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Let the dough continue rising until roughly 2.5x its original size.\nPoke test: press 2-3 cm deep.\n- Indentation slowly/partially springs back = ready\n- Indentation springs back immediately = not ready yet\n- Indentation stays = over-proofed",
+          "flexPriority": 6,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        },
+        {
+          "id": "divide-shape",
+          "name": "Divide and shape",
+          "emoji": "🍞",
+          "type": "active",
+          "duration": { "min": 15, "ideal": 20, "max": 30 },
+          "dependsOn": "bulk-ferment-rise",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Flour the work surface.\nGently turn the dough out of the container.\nDivide into {{yield:amount}} halves.\nPre-shape each half into a round, building surface tension.\nDust lightly with flour, place into floured proofing baskets.\nSlip into plastic bags.\n\nTechnique: https://youtu.be/MPdedk9gJLQ",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true },
+          "scalesWithYield": true
+        },
+        {
+          "id": "final-proof",
+          "name": "Final proof",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 50, "ideal": 60, "max": 75 },
+          "dependsOn": "divide-shape",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Let the dough pieces proof in the baskets for 1 hour.\nUse the poke test to check readiness.",
+          "flexPriority": 4,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        },
+        {
+          "id": "preheat",
+          "name": "Preheat Dutch oven",
+          "emoji": "🔥",
+          "type": "active",
+          "duration": { "min": 45, "ideal": 50, "max": 60 },
+          "dependsOn": "divide-shape",
+          "gapAfterPrevious": { "min": 0, "ideal": 10, "max": 30 },
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Place the Dutch oven in the oven.\nHeat to 245°C.\nPreheat for at least 45 minutes.\nOptionally verify temperature with an oven thermometer.",
+          "flexPriority": 2,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": true }
+        },
+        {
+          "id": "bake",
+          "name": "Bake bread",
+          "emoji": "🍞🔥",
+          "type": "active",
+          "duration": { "min": 55, "ideal": 60, "max": 65 },
+          "dependsOn": "preheat",
+          "alarm": { "enabled": true, "offsetMinutes": 0 },
+          "description": "Carefully place the dough into the hot Dutch oven.\nBake 30 minutes with the lid on.\nRemove the lid and bake another 30 minutes until a dark brown crust forms.\n\nTechnique: https://youtu.be/rtoMhY0vS9E",
+          "flexPriority": 1,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false },
+          "perUnit": true,
+          "hold": {
+            "where": "Fridge",
+            "storeAction": "Put loaf {n} into the fridge",
+            "retrieveAction": "Take loaf {n} out of the fridge, straight into the hot Dutch Oven",
+            "transitionDuration": { "min": 3, "ideal": 5, "max": 5 }
+          }
+        },
+        {
+          "id": "cool",
+          "name": "Cooling",
+          "emoji": "⏳",
+          "type": "passive",
+          "duration": { "min": 20, "ideal": 30, "max": 60 },
+          "dependsOn": "bake",
+          "alarm": { "enabled": false, "offsetMinutes": 0 },
+          "description": "Remove the loaves from the Dutch oven.\nCool on a wire rack or standing upright.\nDo NOT lay flat on the countertop (the bottom will get soggy).\nWait at least 20 minutes before slicing.",
+          "flexPriority": 3,
+          "unsocialHours": { "canOverlap": false, "mustAvoid": false }
+        }
+      ]
+    }
+  ],
+
+  "surplus": {
+    "enabled": true,
+    "options": [
+      {
+        "id": "freeze-baked",
+        "name": "Freeze baked bread",
+        "description": "Let the bread cool completely, slice it, and freeze in freezer bags with as little air as possible. Take individual slices from the freezer and toast directly.",
+        "shelfLife": {
+          "days": 28,
+          "qualityNotes": "Toasted, almost like fresh. Untoasted, slightly chewy after thawing."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-bread-toast",
+            "name": "Toast slices",
+            "emoji": "🍞",
+            "type": "active",
+            "duration": { "min": 3, "ideal": 5, "max": 5 },
+            "dependsOn": null,
+            "description": "Put frozen slices directly into the toaster. Do not thaw first.",
+            "alarm": { "enabled": false, "offsetMinutes": 0 }
+          }
+        ]
+      },
+      {
+        "id": "retard-shaped",
+        "name": "Refrigerator retard (shaped dough)",
+        "description": "Place the shaped dough piece in its proofing basket into the refrigerator instead of proofing at room temperature. Bake the next day.",
+        "shelfLife": {
+          "days": 1,
+          "qualityNotes": "Often even better than baked right away: more flavor from the longer fermentation, better crust. Best results within 12-18 hours."
+        },
+        "reactivationSteps": [
+          {
+            "id": "surplus-retard-out",
+            "name": "Take dough out of refrigerator",
+            "emoji": "🍞",
+            "type": "passive",
+            "duration": { "min": 45, "ideal": 60, "max": 90 },
+            "dependsOn": null,
+            "description": "Take the dough piece out of the refrigerator.\nLet it acclimatize at room temperature for 45-60 minutes.\nUse the poke test to check readiness.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-preheat",
+            "name": "Preheat Dutch oven",
+            "emoji": "🔥",
+            "type": "active",
+            "duration": { "min": 45, "ideal": 50, "max": 60 },
+            "dependsOn": null,
+            "description": "Heat the Dutch oven in the oven to 245°C.\nPreheat for at least 45 minutes.\nStart in parallel with the acclimatization.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-bake",
+            "name": "Bake",
+            "emoji": "🍞🔥",
+            "type": "active",
+            "duration": { "min": 55, "ideal": 60, "max": 65 },
+            "dependsOn": "surplus-retard-out",
+            "description": "Place the dough into the hot Dutch oven.\n30 minutes with the lid on, 30 minutes without.\nChilled dough often has even better oven spring.",
+            "alarm": { "enabled": true, "offsetMinutes": 0 }
+          },
+          {
+            "id": "surplus-retard-cool",
+            "name": "Cooling",
+            "emoji": "⏳",
+            "type": "passive",
+            "duration": { "min": 20, "ideal": 30, "max": 60 },
+            "dependsOn": "surplus-retard-bake",
+            "description": "Cool on a wire rack or standing upright. At least 20 minutes.",
+            "alarm": { "enabled": false, "offsetMinutes": 0 }
+          }
+        ]
+      }
+    ]
+  },
+
+  "notes": [
+    {
+      "title": "Recognizing poolish maturity",
+      "content": "The poolish is ready when bubbles pop on the surface every few seconds. Processing window: 1-2 hours after 12 hours of maturation. At 24°C room temperature, only a 1-hour window. Never wait longer than 14 hours."
+    },
+    {
+      "title": "Water temperature",
+      "content": "Poolish: exactly 27°C. Main dough: exactly 41°C. Target dough temperature after mixing: 23-24°C. With fresh yeast, split the water: approx. 90% at 41°C, remainder at 23°C. Dissolve the yeast in the cooler water."
+    },
+    {
+      "title": "Folding technique",
+      "content": "2-3 sets of stretch and folds every 20 minutes during the first hour. Then leave the dough undisturbed until it reaches 2.5x its original size. Technique: https://youtu.be/CQHuWDEo3SA"
+    },
+    {
+      "title": "Shaping technique",
+      "content": "Ease the dough out of the container using a floured edge. Build surface tension during pre-shaping by dragging across the work surface. When placing into the basket, keep the bottom side down — do not twist the dough. Technique: https://youtu.be/MPdedk9gJLQ"
+    },
+    {
+      "title": "Poke test (proofing check)",
+      "content": "Press 2-3 cm deep.\n- Indentation slowly/partially springs back = dough is ready\n- Indentation springs back immediately = not ready yet\n- Indentation stays completely = over-proofed"
+    },
+    {
+      "title": "Baking",
+      "content": "Preheat Dutch oven for at least 45 min at 245°C. 30 min with lid (steam), 30 min without lid (crust). Place the second loaf in the refrigerator 20 min before the first is done. Technique: https://youtu.be/rtoMhY0vS9E"
+    },
+    {
+      "title": "After baking",
+      "content": "Cool on a wire rack or standing upright. Do NOT lay flat on the countertop (condensation makes the bottom soggy)."
+    },
+    {
+      "title": "Optional mix-ins",
+      "content": "Corn, cheese, and/or chili are folded in during the last stretch and fold. Use individually or in combination. Do not overwork — just fold in. Cheese melts during baking and creates pockets; corn caramelizes slightly."
+    }
+  ]
+}
