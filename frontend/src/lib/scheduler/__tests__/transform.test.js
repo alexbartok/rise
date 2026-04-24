@@ -90,4 +90,46 @@ describe('expandForYield', () => {
             expect(slot.hold).toBeUndefined();
         }
     });
+
+    it('rewires dependsOn through multiple steps (not just the immediate next)', () => {
+        // proof → bake (perUnit) → cleanup (deps on proof, not bake) → cool (deps on bake)
+        // cleanup should be left alone; cool should rewire to bake-N
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'proof', name: 'Proof', duration: { min: 60, ideal: 60, max: 60 }, description: 'Proof' },
+                    { id: 'bake', name: 'Bake', duration: { min: 60, ideal: 60, max: 60 }, dependsOn: 'proof', description: 'Bake', perUnit: true },
+                    { id: 'cleanup', name: 'Cleanup', duration: { min: 5, ideal: 5, max: 5 }, dependsOn: 'proof', description: 'Cleanup' },
+                    { id: 'cool', name: 'Cool', duration: { min: 20, ideal: 20, max: 20 }, dependsOn: 'bake', description: 'Cool' },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 1);
+        const steps = result.phases[0].steps;
+        const cleanup = steps.find(s => s.id === 'cleanup');
+        const cool = steps.find(s => s.id === 'cool');
+        expect(cleanup.dependsOn).toBe('proof');
+        expect(cool.dependsOn).toBe('bake-2');
+    });
+
+    it('handles chained perUnit steps (second depends on first)', () => {
+        // Both shape and bake are perUnit. shape-N → bake-1 → bake-2 → ...
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'shape', name: 'Shape', duration: { min: 5, ideal: 5, max: 5 }, description: 'Shape', perUnit: true },
+                    { id: 'bake', name: 'Bake', duration: { min: 60, ideal: 60, max: 60 }, dependsOn: 'shape', description: 'Bake', perUnit: true },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 1);
+        const ids = result.phases[0].steps.map(s => s.id);
+        expect(ids).toEqual(['shape-1', 'shape-2', 'bake-1', 'bake-2']);
+        const bake1 = result.phases[0].steps.find(s => s.id === 'bake-1');
+        expect(bake1.dependsOn).toBe('shape-2');
+    });
 });

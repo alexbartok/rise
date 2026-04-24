@@ -28,6 +28,9 @@ export function expandForYield(recipe, multiplier) {
 
 function expandPhaseSteps(steps, yieldCount) {
     const expanded = [];
+    // lastSlotId is scoped per-phase. Cross-phase dependsOn rewiring is not
+    // supported; current recipes don't need it. If that changes, lift this map
+    // to expandForYield and pass it down.
     // Map: original perUnit step id → id of its last generated slot. Used to
     // rewire dependsOn links from steps that pointed at the per-unit step.
     const lastSlotId = new Map();
