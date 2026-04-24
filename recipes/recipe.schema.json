@@ -139,6 +139,33 @@
             "optional": {
               "type": "boolean",
               "default": false
+            },
+            "perUnit": {
+              "type": "boolean",
+              "description": "When true and recipe is scaled, expands into N sequential slots (one per yield unit). Mutually exclusive with scalesWithYield."
+            },
+            "scalesWithYield": {
+              "type": "boolean",
+              "description": "When true, step duration scales linearly with yield ratio. For active hands-on work (shaping, basket setup)."
+            },
+            "hold": {
+              "type": "object",
+              "description": "Only valid with perUnit: true. Describes the holding state for overflow units.",
+              "properties": {
+                "where": { "type": "string" },
+                "storeAction": { "type": "string" },
+                "retrieveAction": { "type": "string" },
+                "transitionDuration": {
+                  "type": "object",
+                  "properties": {
+                    "min": { "type": "integer" },
+                    "ideal": { "type": "integer" },
+                    "max": { "type": "integer" }
+                  },
+                  "required": ["ideal"]
+                }
+              },
+              "required": ["where", "storeAction", "retrieveAction", "transitionDuration"]
             }
           }
         }
