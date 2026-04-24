@@ -11,6 +11,13 @@ class Duration(BaseModel):
     max: int
 
 
+class Hold(BaseModel):
+    where: str
+    storeAction: str
+    retrieveAction: str
+    transitionDuration: Duration
+
+
 class Alarm(BaseModel):
     enabled: bool
     offsetMinutes: int
@@ -40,6 +47,9 @@ class Step(BaseModel):
     flexPriority: int
     unsocialHours: UnsocialHours
     optional: bool = False
+    perUnit: bool = False
+    scalesWithYield: bool = False
+    hold: Hold | None = None
 
 
 class Phase(BaseModel):
