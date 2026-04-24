@@ -276,4 +276,21 @@ describe('expandForYield', () => {
         // perUnit. A recipe with scalesWithYield but no perUnit returns unchanged.
         expect(result).toBe(recipe);
     });
+
+    it('scales and rewires when a scalesWithYield step depends on a perUnit step', () => {
+        const recipe = {
+            baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+            phases: [{
+                id: 'p', name: 'p',
+                steps: [
+                    { id: 'shape', name: 'Shape', duration: { min: 10, ideal: 10, max: 10 }, perUnit: true, description: 'Shape' },
+                    { id: 'proof', name: 'Proof', duration: { min: 30, ideal: 30, max: 30 }, dependsOn: 'shape', scalesWithYield: true, description: 'Proof' },
+                ],
+            }],
+        };
+        const result = expandForYield(recipe, 2); // N = 4
+        const proof = result.phases[0].steps.find(s => s.id === 'proof');
+        expect(proof.duration).toEqual({ min: 60, ideal: 60, max: 60 });
+        expect(proof.dependsOn).toBe('shape-4');
+    });
 });
