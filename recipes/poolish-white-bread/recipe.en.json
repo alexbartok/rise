@@ -245,7 +245,7 @@
       },
       {
         "id": "retard-shaped",
-        "name": "Refrigerator retard (shaped dough)",
+        "name": "Overnight cold proof (shaped)",
         "description": "Place the shaped dough piece in its proofing basket into the refrigerator instead of proofing at room temperature. Bake the next day.",
         "shelfLife": {
           "days": 1,
