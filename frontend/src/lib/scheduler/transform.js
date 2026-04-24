@@ -1,12 +1,14 @@
 /**
- * Expand a recipe for a given yield multiplier, unrolling any perUnit steps
- * into N sequential slots and generating hold events for overflow units.
+ * Expand a recipe for a given yield multiplier: any step with perUnit: true is
+ * replaced by N sequential slots chained via dependsOn, where N = the target
+ * yield count (baseYield.amount × multiplier, rounded, minimum 1). Other steps
+ * that depended on the per-unit step are rewired to depend on the final slot.
  *
- * If the recipe has no perUnit steps, returns the recipe reference unchanged.
+ * If the recipe has no perUnit step, returns the recipe reference unchanged.
  *
  * @param {Object} recipe - Recipe with phases/steps
- * @param {number} multiplier - Yield multiplier (1 = baseYield.amount units)
- * @returns {Object} Expanded recipe (same shape), or original if no-op
+ * @param {number} multiplier - Yield multiplier (final units = baseYield.amount × multiplier)
+ * @returns {Object} Expanded recipe (new object), or original reference if no-op
  */
 export function expandForYield(recipe, multiplier) {
     const hasPerUnit = recipe.phases?.some(p =>
@@ -14,6 +16,49 @@ export function expandForYield(recipe, multiplier) {
     );
     if (!hasPerUnit) return recipe;
 
-    // TODO: real expansion in next task
-    return recipe;
+    const yieldCount = Math.max(1, Math.round(recipe.baseYield.amount * multiplier));
+
+    const newPhases = recipe.phases.map(phase => ({
+        ...phase,
+        steps: expandPhaseSteps(phase.steps, yieldCount),
+    }));
+
+    return { ...recipe, phases: newPhases };
+}
+
+function expandPhaseSteps(steps, yieldCount) {
+    const expanded = [];
+    // Map: original perUnit step id → id of its last generated slot. Used to
+    // rewire dependsOn links from steps that pointed at the per-unit step.
+    const lastSlotId = new Map();
+
+    for (const step of steps) {
+        const rewiredDependsOn = step.dependsOn && lastSlotId.has(step.dependsOn)
+            ? lastSlotId.get(step.dependsOn)
+            : step.dependsOn;
+
+        if (!step.perUnit) {
+            expanded.push(rewiredDependsOn === step.dependsOn
+                ? step
+                : { ...step, dependsOn: rewiredDependsOn });
+            continue;
+        }
+
+        // Expand into yieldCount sequential slots
+        let prevId = rewiredDependsOn;
+        for (let k = 1; k <= yieldCount; k++) {
+            const slotId = `${step.id}-${k}`;
+            const { perUnit: _pu, hold: _h, ...rest } = step;
+            expanded.push({
+                ...rest,
+                id: slotId,
+                name: `${step.name} (${k}/${yieldCount})`,
+                dependsOn: prevId,
+            });
+            prevId = slotId;
+        }
+        lastSlotId.set(step.id, `${step.id}-${yieldCount}`);
+    }
+
+    return expanded;
 }

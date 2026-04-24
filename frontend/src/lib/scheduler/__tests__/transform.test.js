@@ -23,4 +23,71 @@ describe('expandForYield', () => {
         const result = expandForYield(plainRecipe, 2);
         expect(result).toBe(plainRecipe);
     });
+
+    const recipeWithPerUnit = {
+        baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+        phases: [{
+            id: 'bake-phase',
+            name: 'Bake',
+            steps: [
+                { id: 'proof', name: 'Proof', duration: { min: 60, ideal: 60, max: 60 }, description: 'Proof' },
+                {
+                    id: 'bake',
+                    name: 'Bake',
+                    duration: { min: 55, ideal: 60, max: 65 },
+                    dependsOn: 'proof',
+                    description: 'Teigling in Dutch Oven',
+                    perUnit: true,
+                },
+                { id: 'cool', name: 'Cool', duration: { min: 20, ideal: 20, max: 30 }, dependsOn: 'bake', description: 'Cool' },
+            ],
+        }],
+    };
+
+    it('expands perUnit step into N slots at yield=N (no hold)', () => {
+        // baseYield 2 × multiplier 2 = 4 slots
+        const result = expandForYield(recipeWithPerUnit, 2);
+        const steps = result.phases[0].steps;
+        expect(steps.map(s => s.id)).toEqual(['proof', 'bake-1', 'bake-2', 'bake-3', 'bake-4', 'cool']);
+        expect(steps[1].dependsOn).toBe('proof');
+        expect(steps[2].dependsOn).toBe('bake-1');
+        expect(steps[3].dependsOn).toBe('bake-2');
+        expect(steps[4].dependsOn).toBe('bake-3');
+        // cool originally dependsOn 'bake'; must be rewired to the final slot
+        expect(steps[5].dependsOn).toBe('bake-4');
+    });
+
+    it('at yield=1, perUnit step becomes a single slot', () => {
+        // baseYield 2 × multiplier 0.5 = 1 slot
+        const result = expandForYield(recipeWithPerUnit, 0.5);
+        const steps = result.phases[0].steps;
+        expect(steps.map(s => s.id)).toEqual(['proof', 'bake-1', 'cool']);
+        expect(steps[2].dependsOn).toBe('bake-1');
+    });
+
+    it('preserves duration on each expanded slot', () => {
+        // baseYield 2 × multiplier 1 = 2 slots
+        const result = expandForYield(recipeWithPerUnit, 1);
+        const bakeSlots = result.phases[0].steps.filter(s => s.id.startsWith('bake-'));
+        expect(bakeSlots).toHaveLength(2);
+        for (const slot of bakeSlots) {
+            expect(slot.duration).toEqual({ min: 55, ideal: 60, max: 65 });
+        }
+    });
+
+    it('names slots with unit index in name field', () => {
+        const result = expandForYield(recipeWithPerUnit, 1);
+        const bakeSlots = result.phases[0].steps.filter(s => s.id.startsWith('bake-'));
+        expect(bakeSlots[0].name).toBe('Bake (1/2)');
+        expect(bakeSlots[1].name).toBe('Bake (2/2)');
+    });
+
+    it('strips perUnit and hold fields from generated slots', () => {
+        const result = expandForYield(recipeWithPerUnit, 1);
+        const bakeSlots = result.phases[0].steps.filter(s => s.id.startsWith('bake-'));
+        for (const slot of bakeSlots) {
+            expect(slot.perUnit).toBeUndefined();
+            expect(slot.hold).toBeUndefined();
+        }
+    });
 });
