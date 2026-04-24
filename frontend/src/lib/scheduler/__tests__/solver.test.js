@@ -249,6 +249,96 @@ describe('variants', () => {
     });
 });
 
+describe('computeSchedule with perUnit step', () => {
+    const perUnitRecipe = {
+        id: 'test-per-unit',
+        baseYield: { amount: 2, unit: 'loaves', weightPerUnit: { min: 800, max: 900 } },
+        phases: [{
+            id: 'bake-phase',
+            name: 'Bake',
+            steps: [
+                {
+                    id: 'proof',
+                    name: 'Proof',
+                    type: 'passive',
+                    duration: { min: 60, ideal: 60, max: 60 },
+                    alarm: { enabled: false, offsetMinutes: 0 },
+                    description: 'Proof',
+                    flexPriority: 5,
+                    unsocialHours: { canOverlap: true, mustAvoid: false },
+                },
+                {
+                    id: 'bake',
+                    name: 'Bake',
+                    type: 'active',
+                    duration: { min: 60, ideal: 60, max: 60 },
+                    dependsOn: 'proof',
+                    alarm: { enabled: true, offsetMinutes: 0 },
+                    description: 'Bake',
+                    flexPriority: 1,
+                    unsocialHours: { canOverlap: false, mustAvoid: false },
+                    perUnit: true,
+                    hold: {
+                        where: 'Fridge',
+                        storeAction: 'Put loaf {n} in fridge',
+                        retrieveAction: 'Take loaf {n} from fridge',
+                        transitionDuration: { min: 5, ideal: 5, max: 5 },
+                    },
+                },
+            ],
+        }],
+    };
+
+    it('at multiplier=2, schedule contains 4 bake slots plus 1 store step', () => {
+        const target = new Date('2026-05-01T18:00:00');
+        const result = computeSchedule(perUnitRecipe, {
+            direction: 'backward',
+            targetTime: target,
+            multiplier: 2,
+        });
+        const bakeSlots = result.steps.filter(s => /^bake-\d+$/.test(s.id));
+        expect(bakeSlots).toHaveLength(4);
+        const store = result.steps.find(s => s.id === 'bake-hold-store');
+        expect(store).toBeDefined();
+    });
+
+    it('at multiplier=1, schedule produces 2 bake slots with 1 store step', () => {
+        const target = new Date('2026-05-01T18:00:00');
+        const result = computeSchedule(perUnitRecipe, {
+            direction: 'backward',
+            targetTime: target,
+            multiplier: 1,
+        });
+        const bakeSlots = result.steps.filter(s => /^bake-\d+$/.test(s.id));
+        expect(bakeSlots).toHaveLength(2);
+        const store = result.steps.find(s => s.id === 'bake-hold-store');
+        expect(store).toBeDefined();
+    });
+
+    it('at multiplier=0.5, schedule produces 1 bake slot and no store step', () => {
+        const target = new Date('2026-05-01T18:00:00');
+        const result = computeSchedule(perUnitRecipe, {
+            direction: 'backward',
+            targetTime: target,
+            multiplier: 0.5,
+        });
+        const bakeSlots = result.steps.filter(s => /^bake-\d+$/.test(s.id));
+        expect(bakeSlots).toHaveLength(1);
+        const store = result.steps.find(s => s.id === 'bake-hold-store');
+        expect(store).toBeUndefined();
+    });
+
+    it('without multiplier in options, treats as multiplier=1 (baseYield)', () => {
+        const target = new Date('2026-05-01T18:00:00');
+        const result = computeSchedule(perUnitRecipe, {
+            direction: 'backward',
+            targetTime: target,
+        });
+        const bakeSlots = result.steps.filter(s => /^bake-\d+$/.test(s.id));
+        expect(bakeSlots).toHaveLength(2);
+    });
+});
+
 describe('schedule shape', () => {
     it('returns expected structure', () => {
         const target = new Date('2026-04-05T19:00:00');

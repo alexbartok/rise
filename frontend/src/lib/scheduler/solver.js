@@ -1,4 +1,5 @@
 import { buildGraph, topologicalSort, filterOptionals } from './graph.js';
+import { expandForYield } from './transform.js';
 
 /**
  * Format a duration in minutes into a human-readable string like "2d 2h 35min".
@@ -493,10 +494,12 @@ function computeScheduleCore(recipe, options) {
         optionals = {},
         unsocialStart = '23:00',
         unsocialEnd = '07:00',
+        multiplier = 1,
     } = options;
 
-    // 1. Flatten steps from all phases
-    const allSteps = flattenSteps(recipe);
+    // 1. Flatten steps from all phases (after applying yield transform)
+    const transformed = expandForYield(recipe, multiplier);
+    const allSteps = flattenSteps(transformed);
 
     // 2. Filter optionals
     const activeSteps = filterOptionals(allSteps, optionals);
