@@ -209,6 +209,9 @@ Each phase is an object:
 | `unsocialHours.canOverlap` | boolean | Yes | -- | `true` for passive steps that can run overnight. |
 | `unsocialHours.mustAvoid` | boolean | Yes | -- | `true` for active steps that should not happen at 4am. |
 | `optional` | boolean | No | `false` | When `true`, the step is excluded by default; the user can opt in. |
+| `perUnit` | boolean | No | `false` | When `true`, the step is replicated into one sequential slot per yield unit at scheduling time. Declare `hold` to place a store event for overflow units. See the scalable-per-unit pattern below. |
+| `scalesWithYield` | boolean | No | `false` | When `true` and the recipe is in transform mode (has a `perUnit` step), duration is multiplied by `yieldCount / baseYield.amount`. For active hands-on work that grows with batch size (shaping, basket setup). |
+| `hold` | hold object | No | -- | Only valid when `perUnit: true`. Auto-generates a "store" event for units 2..N that sit waiting for their slot. Fields: `where` (location label), `storeAction` and `retrieveAction` (strings; `{n}` is substituted with unit number), `transitionDuration` (same `min`/`ideal`/`max` as step duration). |
 
 ### surplus
 
@@ -600,6 +603,39 @@ Surplus options tell the user what to do with extra dough and how to bake it lat
 ```
 
 Reactivation steps use a simpler format than phase steps -- they do not need `flexPriority` or `unsocialHours`.
+
+### Scalable per-unit steps
+
+If a recipe makes multiple units (e.g. 2 loaves, 6 pizza balls) and a step physically processes one unit at a time -- like baking where a single Dutch Oven holds one loaf -- declare `perUnit: true` on that step. At scheduling time the step expands into one sequential slot per yield unit. The slot's duration is the authored duration (per unit, not total); slots chain via `dependsOn` so they stack in the schedule.
+
+When units have to wait their turn, add a `hold` block so the scheduler generates a real timeline event for moving the overflow units to their holding state (fridge, bench, etc.) and auto-prefixes the retrieve action onto later slots. The `{n}` placeholder in `storeAction` / `retrieveAction` is replaced with the unit number.
+
+```json
+{
+  "id": "bake",
+  "name": "Bake loaf",
+  "type": "active",
+  "duration": { "min": 55, "ideal": 60, "max": 65 },
+  "dependsOn": "final-proof",
+  "description": "Place dough in hot Dutch Oven. 30 min with lid, 30 min without.",
+  "alarm": { "enabled": true, "offsetMinutes": 0 },
+  "flexPriority": 1,
+  "unsocialHours": { "canOverlap": false, "mustAvoid": true },
+  "perUnit": true,
+  "hold": {
+    "where": "Fridge",
+    "storeAction": "Put loaf {n} in the fridge",
+    "retrieveAction": "Take loaf {n} from the fridge, straight into the Dutch Oven",
+    "transitionDuration": { "min": 3, "ideal": 5, "max": 5 }
+  }
+}
+```
+
+At yield=4 this generates: one "Put loaves 2, 3, 4 in the fridge" event, then four bake slots back-to-back, with the retrieve line prepended to slots 2, 3, and 4. At yield=1 only a single bake slot (no hold event, no retrieve prefix).
+
+Pair with `scalesWithYield: true` on *other* steps -- like `divide-shape` -- whose hands-on time grows with batch size but which don't need to be replicated. Duration scales linearly with the yield ratio.
+
+A recipe is in transform mode only when it has at least one `perUnit: true` step. Without that, scaling changes ingredient amounts only and leaves the step list alone. See `recipes/poolish-white-bread-scalable/` for a reference recipe.
 
 ---
 
